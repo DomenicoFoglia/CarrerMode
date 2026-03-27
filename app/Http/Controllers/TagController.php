@@ -28,7 +28,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:25',
+            'name' => 'required|string|max:25|unique:tags,name,NULL,id,user_id,' . Auth::id(),
             'color' => 'sometimes|nullable|string|max:7'
         ]);
 
@@ -63,6 +63,15 @@ class TagController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // $user = Auth::user();
+
+        // $tag= $user->tags()->findOrFail($id);
+
+        Auth::user()->tags()->findOrFail($id)->delete();
+
+        return response()->json([
+            'message' => 'Tag eliminato con successo'
+        ], 200);
+
     }
 }

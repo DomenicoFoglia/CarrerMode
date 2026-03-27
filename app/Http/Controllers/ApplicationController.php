@@ -74,7 +74,7 @@ class ApplicationController extends Controller
 
         //Cerca la candidatura tra quelle dell'utente, se la trova la ritorna altrimenti, con 
         //la funzione findOrFail(), ritorna direttamente 404
-        $application = $user->applications()->with('tags')->findOrFail($id);
+        $application = $user->applications()->with(['reminders', 'tags'])->findOrFail($id);
 
         return response()->json([
             'message' => 'Candidatura trovata',

@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Application;
+use App\Models\Reminder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class ReminderController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request, Application $application)
+    {
+        if($application->user_id !== Auth::id()){
+            return response()->json(['message' => 'Non autorizzato'], 403);
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'notes' => 'nullable|string',
+            'remind_at' => 'required|date',
+            'sent' => 'boolean'
+        ]);
+
+        $reminder = $application->reminders()->create($validated);
+
+        return response()->json([
+            'message' => 'Reminder creato con successo',
+            'reminder' => $reminder
+        ], 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $reminder = Reminder::findOrFail($id);
+
+        if($reminder->application->user_id !== Auth::id()){
+            return response()->json(['message' => 'Non autorizzato'], 403);
+        }
+
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'notes' => 'nullable|string',
+            'remind_at' => 'sometimes|required|date',
+            'sent' => 'boolean'
+        ]);
+
+        $reminder->update($validated);
+
+        return response()->json([
+            'message' => 'Reminder aggiornato con successo',
+            'reminder' => $reminder
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $reminder = Reminder::findOrFail($id);
+    
+        if($reminder->application->user_id !== Auth::id()){
+            return response()->json(['message' => 'Non autorizzato'], 403);
+        }
+
+        $reminder->delete();
+
+        return response()->json([
+            'message' => 'Reminder eliminato con successo'
+        ], 200);
+    }
+}

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,3 +27,13 @@ Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth
 
 //Tags
 Route::apiResource('tags', TagController::class)->only(['index', 'store', 'destroy'])->middleware('auth:sanctum');
+
+//Reminders
+Route::post('/applications/{application}/reminders', [ReminderController::class, 'store'])->middleware('auth:sanctum');
+Route::put('/reminders/{reminder}', [ReminderController::class, 'update'])->middleware('auth:sanctum');
+Route::delete('/reminders/{reminder}', [ReminderController::class, 'destroy'])->middleware('auth:sanctum');
+
+//Attachments
+Route::post('/applications/{application}/attachments', [AttachmentController::class, 'store'])->middleware('auth:sanctum');
+Route::get('/attachments/{attachment}', [AttachmentController::class, 'show'])->middleware('auth:sanctum');
+Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destroy'])->middleware('auth:sanctum');
