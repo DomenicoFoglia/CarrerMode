@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Application;
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AttachmentController extends Controller
 {
@@ -52,9 +54,13 @@ class AttachmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Attachment $attachment)
     {
-        //
+        if($attachment->application->user_id !== Auth::id()){
+            return response()->json(['message' => 'Non autorizzato'], 403);
+        }
+
+        return Storage::disk('local')->download($attachment->path, $attachment->filename);
     }
 
     /**
@@ -68,8 +74,16 @@ class AttachmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Attachment $attachment)
     {
-        //
+        if($attachment->application->user_id !== Auth::id()){
+            return response()->json(['message' => 'Non autorizzato'], 403);
+        }
+
+        Storage::disk('local')->delete($attachment->path);
+
+        $attachment->delete();
+
+        return response()->json(['message' => 'Allegato eliminato correttamente']);
     }
 }
