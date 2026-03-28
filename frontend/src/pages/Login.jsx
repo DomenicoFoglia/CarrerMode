@@ -8,10 +8,12 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null); // Per mostrare errori all'utente
+    // const [user,  setUser] = useState('');
 
     //Hook di navigazione e store
     const navigate = useNavigate();
     const setToken = useAuthStore((state) => state.setToken);
+    const setUser = useAuthStore((state) => state.setUser);
 
     //Inviio
     const handleSubmit = async (e) =>{
@@ -25,11 +27,13 @@ function Login() {
                 password: password
             });
 
-            //Sanctum restituiscec il token 
+            //Sanctum restituiscec il token e lo user
             const token = response.data.token;
-
-            //Lo salviamo nel localStorage
+            const user = response.data.user;
+            //L salviamo nel localStorage
             setToken(token);
+            //Losalviamo nello store Zustand
+            setUser(user);
 
             //Portiamo l'uteente alla Dashboard
             navigate('/');

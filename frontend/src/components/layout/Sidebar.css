@@ -1,0 +1,39 @@
+/* Contenitore principale della sidebar */
+.sidebar {
+    background-color: #131825; /
+    height: 100%;              
+    padding: 12px 8px;         
+    border-right: 1px solid #2a3044; 
+}
+
+/* Contenitore dei link */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column; 
+    gap: 2px;             
+}
+
+/* Stile base di ogni link */
+.sidebar-link {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: #8a90a0;         
+    text-decoration: none;  
+    font-size: 17px;
+    transition: all 0.15s;   
+}
+
+/* Hover */
+.sidebar-link:hover {
+    background-color: #1e2538;
+    color: #c8cdd8;
+}
+
+/* Active link della pagina corrente */
+.sidebar-link.active {
+    background-color: #1e2d4a; 
+    color: #4a9eff;             
+    border-left: 2px solid #4a9eff; 
+    border-radius: 0 4px 4px 0;    
+}

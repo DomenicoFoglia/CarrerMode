@@ -1,0 +1,32 @@
+.app-shell {
+    display: grid;
+    /* Definiamo due righe: la prima per la topbar (60px), la seconda per il resto (1fr) */
+    grid-template-rows: 60px 1fr;    /* topbar fissa + contenuto */
+    /* Definiamo due colonne: la sidebar (200px) e il contenuto (1fr) */
+    grid-template-columns: 200px 1fr; /* sidebar fissa + contenuto */
+    height: 100vh;
+    width: 100vw;
+}
+
+.topbar {
+    /* La topbar parte dalla colonna 1 e arriva fino alla fine (-1) */
+    grid-column: 1 / -1;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.sidebar {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+}
+
+.content {
+    background-color: #f4f7f6;
+    padding: 20px;
+    /* Permette lo scroll solo nel contenuto se la pagina è lunga */
+    overflow-y: auto; 
+}

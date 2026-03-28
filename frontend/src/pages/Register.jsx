@@ -14,6 +14,7 @@ function Register() {
     //Hook di navigazione e store
     const navigate = useNavigate();
     const setToken = useAuthStore((state) => state.setToken);
+    const setUser = useAuthStore((state) => state.setUser);
 
     //Inviio
     const handleSubmit = async (e) =>{
@@ -29,16 +30,18 @@ function Register() {
                 password_confirmation: password_confirmation
             });
 
-            //Sanctum restituiscec il token 
+            //Sanctum restituiscec il token e lo user
             const token = response.data.token;
-
+            const user = response.data.user;
             //Lo salviamo nel localStorage
             setToken(token);
+            //Losalviamo nello store Zustand
+            setUser(user);
 
             //Redirect alla Dashboard perche abbiamo gia il tokene siamo loggati dopo la registrazione
             //se cosi non fosse entreremmo nel catch
             navigate('/');
-           
+        
         }catch(err){
             // Se il backend risponde con un errore (es. 401 Credenziali errate)
             const message = err.response?.data?.message || "Errore durante la registrazione";
