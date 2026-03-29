@@ -1,0 +1,101 @@
+.new-app-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.header-section { margin-bottom: 30px; }
+.header-section h1 { color: #e0e4ee; margin-bottom: 8px; }
+.header-section p { color: #8a90a0; }
+
+.app-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-section {
+    background: #131825;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #2a3044;
+}
+
+.form-section h3 {
+    font-size: 16px;
+    color: #4a9eff;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-num {
+    background: #4a9eff;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+/* Griglia per affiancare i campi */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group.full-width { grid-column: span 2; margin-top: 10px; }
+
+.form-group label {
+    font-size: 12px;
+    color: #8a90a0;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    background: #1c2230;
+    border: 1px solid #2a3044;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus { border-color: #4a9eff; }
+
+/* Bottoni */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.btn-primary {
+    background: #4a9eff;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid #2a3044;
+    color: #8a90a0;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+}

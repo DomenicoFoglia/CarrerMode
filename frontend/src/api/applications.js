@@ -5,6 +5,7 @@ export const getApplications = () => {
     return api.get('/applications');
 }
 
+// Recupoera una applicazione specifica in modo dinamico
 export const getApplication = (id) =>{
     return api.get(`/applications/${id}`);
 }
@@ -14,3 +15,8 @@ export const getStats = () => {
     return api.get('/applications/stats');
 }
 
+export const createApplication = (data) => {
+    return api.post('/applications', data);
+}
+
+export const deleteApplication = (id) => api.delete(`/applications/${id}`);

@@ -1,0 +1,10 @@
+body, #root, .app-shell, .content {
+    background-color: #0b101b !important;
+    color: #e0e4ee;
+    min-height: 100vh;
+}
+
+.app-content {
+    background-color: #0b0e14;
+    min-height: 100vh;
+}

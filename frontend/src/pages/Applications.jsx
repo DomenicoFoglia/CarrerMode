@@ -3,6 +3,7 @@ import './Applications.css';
 import { getApplications } from '../api/applications';
 import { useNavigate } from 'react-router-dom';
 
+
 function Applications() {
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -32,7 +33,11 @@ function Applications() {
         <div className='applications-container'>
             <div className="apps-header">
                 <h1>Le mie candidature</h1>
-                <button className="btn-add">Nuova Candidatura</button>
+                <button 
+                    className="btn-add" 
+                    onClick={() => navigate('/applications/new')}>
+                    Nuova Candidatura
+                </button>
             </div>
 
             <div className="apps-table-container">
