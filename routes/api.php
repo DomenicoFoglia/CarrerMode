@@ -13,7 +13,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 //Rotte per le candidature
+Route::get('/applications/stats', [ApplicationController::class, 'stats'])->middleware('auth:sanctum');
 Route::apiResource('applications', ApplicationController::class)->middleware('auth:sanctum');
+
 
 //Registrazione
 Route::post('/auth/register', [AuthController::class, 'register']);

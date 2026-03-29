@@ -139,4 +139,18 @@ class ApplicationController extends Controller
             'message' => 'Candidatura eliminata con successo'
         ], 200);
     }
+
+    public function stats(){
+        $user = Auth::user();
+
+        $stats = [
+            'total' => $user->applications()->count(),
+            'sent' => $user->applications()->where('status', 'sent')->count(),
+            'interview' => $user->applications()->where('status', 'interview')->count(),
+            'waiting' => $user->applications()->where('status', 'waiting')->count(),
+            'rejected' => $user->applications()->where('status', 'rejected')->count()
+        ];
+
+        return response()->json($stats);
+    }
 }
