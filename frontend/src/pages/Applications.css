@@ -1,0 +1,132 @@
+.applications-container {
+    padding: 30px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.apps-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.apps-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #e0e4ee;
+    margin: 0;
+}
+
+/* Bottone Nuova Candidatura */
+.btn-add {
+    background: #4a9eff;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+}
+
+.btn-add:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+}
+
+/* Container Tabella */
+.apps-table-container {
+    background: #131825;
+    border: 1px solid #2a3044;
+    border-radius: 12px;
+    overflow: hidden; /* Per arrotondare gli angoli della tabella */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.apps-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e0e4ee;
+}
+
+.apps-table th {
+    text-align: left;
+    background: #1c2230;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8a90a0;
+    padding: 18px 20px;
+    border-bottom: 1px solid #2a3044;
+}
+
+.apps-table td {
+    padding: 16px 20px;
+    font-size: 15px;
+    border-bottom: 1px solid #2a3044;
+    vertical-align: middle;
+}
+
+.apps-table tr:last-child td {
+    border-bottom: none;
+}
+
+.apps-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Testo Azienda */
+.apps-table td strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Bottone Dettagli (all'interno della tabella) */
+.apps-table td button {
+    background: transparent;
+    border: 1px solid #4a9eff;
+    color: #4a9eff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.apps-table td button:hover {
+    background: #4a9eff;
+    color: white;
+}
+
+/* Badge degli Stati (già definiti ma migliorati) */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-badge.sent { background: rgba(74, 158, 255, 0.15); color: #4a9eff; }
+.status-badge.interview { background: rgba(163, 113, 247, 0.15); color: #a371f7; }
+.status-badge.rejected { background: rgba(255, 69, 58, 0.15); color: #ff453a; }
+.status-badge.pending { background: rgba(255, 214, 10, 0.15); color: #ffd60a; }
+
+/* Caricamento */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #8a90a0;
+    font-size: 18px;
+}
