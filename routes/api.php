@@ -34,6 +34,7 @@ Route::apiResource('tags', TagController::class)->only(['index', 'store', 'destr
 Route::post('/applications/{application}/reminders', [ReminderController::class, 'store'])->middleware('auth:sanctum');
 Route::put('/reminders/{reminder}', [ReminderController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('/reminders/{reminder}', [ReminderController::class, 'destroy'])->middleware('auth:sanctum');
+Route::get('/reminders', [ReminderController::class, 'index'])->middleware('auth:sanctum');
 
 //Attachments
 Route::post('/applications/{application}/attachments', [AttachmentController::class, 'store'])->middleware('auth:sanctum');

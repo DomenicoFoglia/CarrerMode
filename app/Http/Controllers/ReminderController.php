@@ -14,7 +14,15 @@ class ReminderController extends Controller
      */
     public function index()
     {
-        //
+        // Recuperiamo i promemoria delle candidature che appartengono all'utente loggato
+        $reminders = Reminder::whereHas('application', function ($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->with('application:id,company') // Carichiamo solo l'id e il nome dell'azienda
+        ->orderBy('remind_at', 'asc')
+        ->get();
+
+        return response()->json($reminders);
     }
 
     /**
@@ -61,6 +69,7 @@ class ReminderController extends Controller
         }
 
         $validated = $request->validate([
+            'application_id' => 'required|exists:applications,id',
             'title' => 'sometimes|required|string|max:255',
             'notes' => 'nullable|string',
             'remind_at' => 'sometimes|required|date',
@@ -71,7 +80,7 @@ class ReminderController extends Controller
 
         return response()->json([
             'message' => 'Reminder aggiornato con successo',
-            'reminder' => $reminder
+            'reminder' => $reminder->load('application')
         ]);
     }
 

@@ -1,3 +1,4 @@
+import ApplicationDetail from '../pages/ApplicationDetail';
 import api from './axios'
 
 // Recupera la lista completa per la tabella
@@ -20,3 +21,4 @@ export const createApplication = (data) => {
 }
 
 export const deleteApplication = (id) => api.delete(`/applications/${id}`);
+
