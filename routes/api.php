@@ -40,3 +40,4 @@ Route::get('/reminders', [ReminderController::class, 'index'])->middleware('auth
 Route::post('/applications/{application}/attachments', [AttachmentController::class, 'store'])->middleware('auth:sanctum');
 Route::get('/attachments/{attachment}', [AttachmentController::class, 'show'])->middleware('auth:sanctum');
 Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destroy'])->middleware('auth:sanctum');
+

@@ -140,17 +140,42 @@ class ApplicationController extends Controller
         ], 200);
     }
 
-    public function stats(){
+    public function stats()
+    {
         $user = Auth::user();
 
+        // 1. Otteniamo i conteggi per stato in un'unica query
+        $statusCounts = $user->applications()
+            ->selectRaw("status, count(*) as total")
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        // 2. Query per l'andamento mensile
+        $monthlyStats = $user->applications()
+            ->selectRaw('MONTH(applied_at) as month, COUNT(*) as count')
+            ->whereYear('applied_at', date('Y'))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        $months = [
+            1 => 'Gen', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mag', 6 => 'Giu',
+            7 => 'Lug', 8 => 'Ago', 9 => 'Set', 10 => 'Ott', 11 => 'Nov', 12 => 'Dic'
+        ];
+
         $stats = [
-            'total' => $user->applications()->count(),
-            'sent' => $user->applications()->where('status', 'sent')->count(),
-            'interview' => $user->applications()->where('status', 'interview')->count(),
-            'waiting' => $user->applications()->where('status', 'waiting')->count(),
-            'rejected' => $user->applications()->where('status', 'rejected')->count()
+            'total'     => $statusCounts->sum(),
+            'sent'      => $statusCounts->get('sent', 0),
+            'interview' => $statusCounts->get('interview', 0),
+            'waiting'   => $statusCounts->get('waiting', 0),
+            'rejected'  => $statusCounts->get('rejected', 0),
+            'by_month'  => $monthlyStats->map(fn($item) => [
+                'name'  => $months[$item->month],
+                'count' => $item->count
+            ])
         ];
 
         return response()->json($stats);
     }
+
 }

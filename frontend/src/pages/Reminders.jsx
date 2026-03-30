@@ -71,7 +71,7 @@ function Reminders() {
                 setReminders(reminders.filter(r => r.id !== id));
                 if (expandedId === id) setExpandedId(null);
             } catch (error) {
-                alert("Errore durante l'eliminazione");
+                alert("Errore durante l'eliminazione", error);
             }
         }
     };
