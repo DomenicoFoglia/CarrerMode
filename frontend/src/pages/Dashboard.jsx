@@ -66,6 +66,7 @@ function Dashboard() {
                             <th>Ruolo</th>
                             <th>Data</th>
                             <th>Stato</th>
+                            <th>Tag</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,11 +81,28 @@ function Dashboard() {
                                             {app.status}
                                         </span>
                                     </td>
+                                    <td>
+                                        <div className="row-tags">
+                                            {app.tags && app.tags.length > 0 ? (
+                                                app.tags.map(tag => (
+                                                    <span
+                                                        key={tag.id}
+                                                        className="tag-badge"
+                                                        style={{ backgroundColor: tag.color + '22', color: tag.color, border: `1px solid ${tag.color}` }}
+                                                    >
+                                                        {tag.name}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span style={{color: '#4a5060', fontSize: '12px'}}>—</span>
+                                            )}
+                                        </div>
+                                    </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="4">Nessuna candidatura trovata.</td>
+                                <td colSpan="5">Nessuna candidatura trovata.</td>
                             </tr>
                         )}
                     </tbody>

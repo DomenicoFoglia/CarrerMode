@@ -136,3 +136,8 @@
     font-style: italic;
 }
 
+.row-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}

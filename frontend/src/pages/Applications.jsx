@@ -49,6 +49,7 @@ function Applications() {
                             <th>Data</th>
                             <th>Stato</th>
                             <th>Azioni</th>
+                            <th>Tag</th>
                         </tr>
                     </thead>
                     
@@ -66,6 +67,23 @@ function Applications() {
                                     </td>
                                     <td>
                                         <button onClick={() => navigate(`/applications/${app.id}`)}>Dettagli</button>
+                                    </td>
+                                    <td>
+                                        <div className="row-tags">
+                                            {app.tags && app.tags.length > 0 ? (
+                                                app.tags.map(tag => (
+                                                    <span
+                                                        key={tag.id}
+                                                        className="tag-badge"
+                                                        style={{ backgroundColor: tag.color + '22', color: tag.color, border: `1px solid ${tag.color}` }}
+                                                    >
+                                                        {tag.name}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span style={{color: '#4a5060', fontSize: '12px'}}>—</span>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))
