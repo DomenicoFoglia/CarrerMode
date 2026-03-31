@@ -5,6 +5,7 @@ use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -41,3 +42,6 @@ Route::post('/applications/{application}/attachments', [AttachmentController::cl
 Route::get('/attachments/{attachment}', [AttachmentController::class, 'show'])->middleware('auth:sanctum');
 Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destroy'])->middleware('auth:sanctum');
 
+//Opzioni Utente
+Route::put('/user/theme', [UserController::class, 'updateTheme'])->middleware('auth:sanctum');
+Route::put('/user/password', [UserController::class, 'updatePassword'])->middleware('auth:sanctum');
