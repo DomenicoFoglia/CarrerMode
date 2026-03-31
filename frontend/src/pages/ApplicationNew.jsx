@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createApplication } from '../api/applications';
+import { getTags, createTag } from '../api/tags';
 import './ApplicationNew.css';
 
 
@@ -23,7 +24,17 @@ function ApplicationNew() {
         interest_rating: '',
         match_score: '',
         
-    })
+    });
+    //Stati per i Tag
+    const [availableTags, setAvailableTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [newTagName, setNewTagName] = useState([]);
+
+    useEffect(() => {
+        getTags().then(res => {
+            setAvailableTags(res.data.tags || res.data);
+        })
+    }, []);
 
 
     const handleChange = (e) => {
@@ -41,7 +52,7 @@ function ApplicationNew() {
         setLoading(true);
 
         try{
-            await createApplication(form);
+            await createApplication({...form, tags: selectedTags});
             navigate('/applications');
         }catch(error){
             console.error("Errore invio form:", error.response?.data);
@@ -136,6 +147,57 @@ function ApplicationNew() {
                     <div className="form-group full-width">
                         <label>Note personali</label>
                         <textarea name="notes" value={form.notes} onChange={handleChange} rows="3"></textarea>
+                    </div>
+                </section>
+
+                {/* SEZIONE 4: Tag */}
+                <section className="form-section">
+                    <h3><span className="step-num">4</span> Tag</h3>
+                    
+                    {/* Tag esistenti selezionabili */}
+                    <div className="tags-available">
+                        {availableTags.map(tag => (
+                            <span
+                                key={tag.id}
+                                className={`tag-option ${selectedTags.includes(tag.id) ? 'selected' : ''}`}
+                                style={{ borderColor: tag.color, color: selectedTags.includes(tag.id) ? '#fff' : tag.color, backgroundColor: selectedTags.includes(tag.id) ? tag.color : 'transparent' }}
+                                onClick={() => {
+                                    setSelectedTags(prev =>
+                                        prev.includes(tag.id)
+                                            ? prev.filter(id => id !== tag.id)
+                                            : [...prev, tag.id]
+                                    )
+                                }}
+                            >
+                                {tag.name}
+                            </span>
+                        ))}
+                        {availableTags.length === 0 && <p style={{color: '#4a5060', fontSize: '13px'}}>Nessun tag disponibile.</p>}
+                    </div>
+
+                    {/* Crea nuovo tag al volo */}
+                    <div className="new-tag-row">
+                        <input
+                            type="text"
+                            placeholder="Nuovo tag..."
+                            value={newTagName}
+                            onChange={e => setNewTagName(e.target.value)}
+                            onKeyDown={async (e) => {
+                                if (e.key === 'Enter' && newTagName.trim()) {
+                                    e.preventDefault()
+                                    try {
+                                        const res = await createTag({ name: newTagName.trim() })
+                                        const created = res.data.tag
+                                        setAvailableTags(prev => [...prev, created])
+                                        setSelectedTags(prev => [...prev, created.id])
+                                        setNewTagName('')
+                                    } catch {
+                                        alert('Tag già esistente o errore.')
+                                    }
+                                }
+                            }}
+                        />
+                        <span style={{fontSize: '17px', color: '#4a5060'}}>Premi Invio per creare</span>
                     </div>
                 </section>
 

@@ -51,6 +51,7 @@ function Applications() {
                             <th>Azioni</th>
                         </tr>
                     </thead>
+                    
                     <tbody>
                         {applications.length > 0 ? (
                             applications.map(app => (

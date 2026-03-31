@@ -125,6 +125,26 @@ function ApplicationDetail() {
                     </div>
                 </div>
             )}
+
+            {/* SEZIONE TAG */}
+            <div className="detail-card full-width">
+                <h3>Tag</h3>
+                <div className="tags-container">
+                    {application.tags && application.tags.length > 0 ? (
+                        application.tags.map(tag => (
+                            <span
+                                key={tag.id}
+                                className="tag-badge"
+                                style={{ backgroundColor: tag.color + '22', color: tag.color, border: `1px solid ${tag.color}` }}
+                            >
+                                {tag.name}
+                            </span>
+                        ))
+                    ) : (
+                        <p style={{ color: '#4a5060' }}>Nessun tag associato.</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
