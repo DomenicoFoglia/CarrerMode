@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createApplication } from '../api/applications';
+import { createApplication, deleteApplication } from '../api/applications';
 import { getTags, createTag } from '../api/tags';
 import './ApplicationNew.css';
+import { uploadAttachment } from '../api/attachments';
 
 
 function ApplicationNew() {
@@ -30,6 +31,10 @@ function ApplicationNew() {
     const [selectedTags, setSelectedTags] = useState([]);
     const [newTagName, setNewTagName] = useState([]);
 
+    //Stati per CV e Lettera di prensetazione
+    const [cvFile, setCvFile] = useState(null);
+    const [coverFile, setCoverFile] = useState(null);
+
     useEffect(() => {
         getTags().then(res => {
             setAvailableTags(res.data.tags || res.data);
@@ -50,13 +55,37 @@ function ApplicationNew() {
     const handleSubmit = async (e) =>{
         e.preventDefault();
         setLoading(true);
+        let createdAppId = null;
 
         try{
-            await createApplication({...form, tags: selectedTags});
+            const response = await createApplication({...form, tags: selectedTags});
+            createdAppId = response.data.application.id;
+
+            //Upload allegati se presenti
+            const uploadPromises = [];
+            if(cvFile){
+                uploadPromises.push(uploadAttachment(createdAppId, 'cv', cvFile));
+            }
+            if(coverFile){
+                uploadPromises.push(uploadAttachment(createdAppId, 'cover_letter', coverFile));
+            }
+
+            await Promise.all(uploadPromises);
+
             navigate('/applications');
         }catch(error){
-            console.error("Errore invio form:", error.response?.data);
-            alert("Controlla i dati inseriti. Alcuni campi sono obbligatori.");
+            // Se la candidatura era stata creata ma i file non sono stati caricati correttaemnte
+            if (createdAppId) {
+                console.warn("Upload fallito, elimino la candidatura orfana...");
+                await deleteApplication(createdAppId); 
+            }
+
+            // Gestione errore più specifica
+            const errorMsg = error.response?.data?.errors 
+                ? Object.values(error.response.data.errors).flat().join("\n")
+                : "Errore durante il salvataggio. Controlla i formati dei file.";
+                
+            alert(errorMsg);
         }finally{
             setLoading(false);
         }
@@ -156,23 +185,32 @@ function ApplicationNew() {
                     
                     {/* Tag esistenti selezionabili */}
                     <div className="tags-available">
-                        {availableTags.map(tag => (
-                            <span
-                                key={tag.id}
-                                className={`tag-option ${selectedTags.includes(tag.id) ? 'selected' : ''}`}
-                                style={{ borderColor: tag.color, color: selectedTags.includes(tag.id) ? '#fff' : tag.color, backgroundColor: selectedTags.includes(tag.id) ? tag.color : 'transparent' }}
-                                onClick={() => {
-                                    setSelectedTags(prev =>
-                                        prev.includes(tag.id)
-                                            ? prev.filter(id => id !== tag.id)
-                                            : [...prev, tag.id]
-                                    )
-                                }}
-                            >
-                                {tag.name}
-                            </span>
-                        ))}
-                        {availableTags.length === 0 && <p style={{color: '#4a5060', fontSize: '13px'}}>Nessun tag disponibile.</p>}
+                        {availableTags.map(tag => {
+                            // Definiamo un colore di fallback se tag.color è nullo o mancante
+                            const tagColor = tag.color || '#4a9eff'; 
+                            const isSelected = selectedTags.includes(tag.id);
+
+                            return (
+                                <span
+                                    key={tag.id}
+                                    className={`tag-option ${isSelected ? 'selected' : ''}`}
+                                    style={{ 
+                                        borderColor: tagColor, 
+                                        color: isSelected ? '#fff' : tagColor, 
+                                        backgroundColor: isSelected ? tagColor : 'transparent' 
+                                    }}
+                                    onClick={() => {
+                                        setSelectedTags(prev =>
+                                            prev.includes(tag.id)
+                                                ? prev.filter(id => id !== tag.id)
+                                                : [...prev, tag.id]
+                                        );
+                                    }}
+                                >
+                                    {tag.name}
+                                </span>
+                            );
+                        })}
                     </div>
 
                     {/* Crea nuovo tag al volo */}
@@ -198,6 +236,35 @@ function ApplicationNew() {
                             }}
                         />
                         <span style={{fontSize: '17px', color: '#4a5060'}}>Premi Invio per creare</span>
+                    </div>
+                </section>
+
+                {/* SEZIONE 5: Allegati */}
+                <section className="form-section">
+                    <h3><span className="step-num">5</span> Documenti Allegati</h3>
+                    <div className="form-grid">
+                        <div className="form-group">
+                            <label>Curriculum Vitae (PDF, DOCX, ODT)</label>
+                            <div className="file-input-wrapper">
+                                <input 
+                                    type="file" 
+                                    accept=".pdf,.docx,.odt"
+                                    onChange={(e) => setCvFile(e.target.files[0])} 
+                                />
+                                {cvFile && <span className="file-name">✅ {cvFile.name}</span>}
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label>Lettera di Presentazione (PDF, DOCX, ODT)</label>
+                            <div className="file-input-wrapper">
+                                <input 
+                                    type="file" 
+                                    accept=".pdf,.docx,.odt"
+                                    onChange={(e) => setCoverFile(e.target.files[0])} 
+                                />
+                                {coverFile && <span className="file-name">✅ {coverFile.name}</span>}
+                            </div>
+                        </div>
                     </div>
                 </section>
 

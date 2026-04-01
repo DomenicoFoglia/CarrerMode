@@ -29,7 +29,7 @@ class AttachmentController extends Controller
 
         $validated = $request->validate([
             'type' => 'required|in:cv,cover_letter',
-            'file' => 'required|file|mimes:pdf,docx|max:5120'
+            'file' => 'required|file|mimes:pdf,docx,odt|max:5120'
         ]);
 
         $path = $request->file('file')->store('attachments/' . $application->id, 'local');
