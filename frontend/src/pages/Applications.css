@@ -42,6 +42,36 @@
     box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
 }
 
+/* Filtri */
+.filters-bar {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 25px;
+    background: #131825;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #2a3044;
+}
+
+.search-box input {
+    background: #1c2230;
+    border: 1px solid #2a3044;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.status-filters select {
+    background: #1c2230;
+    border: 1px solid #2a3044;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 /* Container Tabella */
 .apps-table-container {
     background: #131825;
