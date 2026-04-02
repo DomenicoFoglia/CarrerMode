@@ -32,6 +32,17 @@ class AttachmentController extends Controller
             'file' => 'required|file|mimes:pdf,docx,odt|max:5120'
         ]);
 
+        // --- LOGICA DI SOSTITUZIONE ---
+        // Cerchiamo se esiste già un allegato di questo tipo per questa candidatura
+        $existing = $application->attachments()->where('type', $validated['type'])->first();
+
+        if ($existing) {
+            // Eliminiamo il file fisico dallo storage
+            Storage::disk('local')->delete($existing->path);
+            // Eliminiamo il record dal database
+            $existing->delete();
+        }
+
         $path = $request->file('file')->store('attachments/' . $application->id, 'local');
 
         $filename = $request->file('file')->getClientOriginalName();

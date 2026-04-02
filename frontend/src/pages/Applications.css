@@ -107,6 +107,22 @@
     color: white;
 }
 
+.actions-cell {
+    display: flex;
+    gap: 8px; 
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #3498db;
+    color: #3498db;
+}
+
+.btn-outline:hover {
+    background: #3498db;
+    color: white;
+}
+
 /* Badge degli Stati (già definiti ma migliorati) */
 .status-badge {
     padding: 6px 12px;
@@ -136,3 +152,4 @@
     flex-wrap: wrap;
     gap: 4px;
 }
+

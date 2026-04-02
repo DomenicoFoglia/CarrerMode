@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import ApplicationDetail from './pages/ApplicationDetail'
 import ApplicationNew from './pages/ApplicationNew'
 import Applications from './pages/Applications'
+import ApplicationEdit from './pages/ApplicationEdit'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Settings from './pages/Settings'
@@ -26,6 +27,7 @@ function App() {
         <Route path="/applications" element={<Applications />} />
         <Route path="/applications/new" element={<ApplicationNew />} />
         <Route path="/applications/:id" element={<ApplicationDetail />} />
+        <Route path="/applications/:id/edit" element={<ApplicationEdit />} />
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/reminders" element={<Reminders />} />
         <Route path="/settings" element={<Settings />} />

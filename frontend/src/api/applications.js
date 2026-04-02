@@ -20,5 +20,9 @@ export const createApplication = (data) => {
     return api.post('/applications', data);
 }
 
+export const updateApplication = (id, data) => {
+    return api.put(`/applications/${id}`, data)
+}
+
 export const deleteApplication = (id) => api.delete(`/applications/${id}`);
 

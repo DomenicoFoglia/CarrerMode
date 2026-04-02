@@ -47,17 +47,26 @@ function ApplicationDetail() {
     return (
         <div className="detail-container">
             <div className="detail-header">
-                <button className="btn-back" onClick={() => navigate('/applications')}>
-                    ← Torna alla lista
-                </button>
+                <div className="header-actions-left">
+                    <button className="btn-back" onClick={() => navigate('/applications')}>
+                        ← Torna alla lista
+                    </button>
+                </div>
 
-                <button className="btn-delete" onClick={handleDelete}>
-                    Elimina Candidatura
-                </button>
-                
                 <div className="header-info">
                     <h1>{application.role} @ {application.company}</h1>
+                    {/* Lo stato lo mettiamo qui sotto o accanto al titolo */}
                     <span className={`status-badge ${application.status}`}>{application.status}</span>
+                </div>
+
+                {/* Ora questo div andrà tutto a destra grazie al CSS */}
+                <div className="header-actions">
+                    <button className="btn-edit" onClick={() => navigate(`/applications/${id}/edit`)}>
+                        Modifica
+                    </button>
+                    <button className="btn-delete" onClick={handleDelete}>
+                        Elimina
+                    </button>
                 </div>
             </div>
 

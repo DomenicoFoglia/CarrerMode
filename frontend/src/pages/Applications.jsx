@@ -48,8 +48,8 @@ function Applications() {
                             <th>Ruolo</th>
                             <th>Data</th>
                             <th>Stato</th>
-                            <th>Azioni</th>
                             <th>Tag</th>
+                            <th>Azioni</th>
                         </tr>
                     </thead>
                     
@@ -64,9 +64,6 @@ function Applications() {
                                         <span className={`status-badge ${app.status}`}>
                                             {app.status}
                                         </span>
-                                    </td>
-                                    <td>
-                                        <button onClick={() => navigate(`/applications/${app.id}`)}>Dettagli</button>
                                     </td>
                                     <td>
                                         <div className="row-tags">
@@ -84,6 +81,21 @@ function Applications() {
                                                 <span style={{color: '#4a5060', fontSize: '12px'}}>—</span>
                                             )}
                                         </div>
+                                    </td>
+                                    <td className="actions-cell">
+                                        <button 
+                                            className="btn-small"
+                                            onClick={() => navigate(`/applications/${app.id}`)}
+                                        >
+                                            Dettagli
+                                        </button>
+                                        {/* AGGIUNTO: Pulsante Modifica rapida */}
+                                        <button 
+                                            className="btn-small btn-outline"
+                                            onClick={() => navigate(`/applications/${app.id}/edit`)}
+                                        >
+                                            Modifica
+                                        </button>
                                     </td>
                                 </tr>
                             ))
