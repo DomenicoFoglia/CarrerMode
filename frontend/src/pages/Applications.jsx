@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import './Applications.css';
 import { getApplications } from '../api/applications';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 
 function Applications() {
+    const [searchParams] = useSearchParams();
+    
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
 
     //Stati per la ricerca
     const [search, setSearch] = useState('');
-    const [filterStatus, setFilterStatus] = useState('all');
+    const [filterStatus, setFilterStatus] = useState(searchParams.get('status') || 'all');
 
     //Logica di filtrraggio
     const filteredApps = applications.filter(app => {
@@ -28,6 +30,10 @@ function Applications() {
     });
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setFilterStatus(searchParams.get('status') || 'all')
+    }, [searchParams])
     
     useEffect(() =>{
         const fetchApps = async () => {
