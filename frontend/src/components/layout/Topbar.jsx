@@ -1,7 +1,8 @@
 import './Topbar.css'
 import api from '../../api/axios'
 import useAuthStore from '../../store/authStore'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, NavLink} from 'react-router-dom'
+
 
 function Topbar(){
     const logout = useAuthStore((state) => state.logout);
@@ -22,6 +23,13 @@ function Topbar(){
     return(
         <header className="topbar">
             <div className="topbar-logo">CarrerMode</div>
+
+            <nav className="topbar-nav">
+                <NavLink to="/" end className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Dashboard</NavLink>
+                <NavLink to="/applications" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Candidature</NavLink>
+                <NavLink to="/statistics" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Statistiche</NavLink>
+                <NavLink to="/reminders" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Reminder</NavLink>
+            </nav>
 
             <div className="topbar-user-section">
                 <span>{user?.name}</span>

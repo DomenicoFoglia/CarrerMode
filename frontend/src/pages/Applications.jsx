@@ -138,7 +138,6 @@ function Applications() {
                                         >
                                             Dettagli
                                         </button>
-                                        {/* AGGIUNTO: Pulsante Modifica rapida */}
                                         <button 
                                             className="btn-small btn-outline"
                                             onClick={(e) => { e.stopPropagation(); navigate(`/applications/${app.id}/edit`)} }
