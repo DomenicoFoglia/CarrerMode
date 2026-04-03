@@ -8,7 +8,6 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Header */
 .apps-header {
     display: flex;
     justify-content: space-between;
@@ -19,13 +18,12 @@
 .apps-header h1 {
     font-size: 24px;
     font-weight: 600;
-    color: #e0e4ee;
+    color: var(--text-primary);
     margin: 0;
 }
 
-/* Bottone Nuova Candidatura */
 .btn-add {
-    background: #4a9eff;
+    background: var(--accent);
     color: white;
     border: none;
     padding: 10px 24px;
@@ -33,75 +31,84 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
 }
 
 .btn-add:hover {
-    background: #357abd;
+    opacity: 0.85;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
 }
 
-/* Filtri */
 .filters-bar {
     display: flex;
     gap: 20px;
     align-items: center;
     margin-bottom: 25px;
-    background: #131825;
+    background: var(--bg-secondary);
     padding: 15px;
     border-radius: 12px;
-    border: 1px solid #2a3044;
+    border: 1px solid var(--border-color);
 }
 
 .search-box input {
-    background: #1c2230;
-    border: 1px solid #2a3044;
-    color: white;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     padding: 10px 15px;
     border-radius: 8px;
     width: 300px;
 }
 
+.search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
 .status-filters select {
-    background: #1c2230;
-    border: 1px solid #2a3044;
-    color: white;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     padding: 10px;
     border-radius: 8px;
     cursor: pointer;
 }
 
-/* Container Tabella */
+.results-count {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.results-count strong {
+    color: var(--text-primary);
+}
+
 .apps-table-container {
-    background: #131825;
-    border: 1px solid #2a3044;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    overflow: hidden; /* Per arrotondare gli angoli della tabella */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
 .apps-table {
     width: 100%;
     border-collapse: collapse;
-    color: #e0e4ee;
+    color: var(--text-primary);
 }
 
 .apps-table th {
     text-align: left;
-    background: #1c2230;
+    background: var(--bg-tertiary);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #8a90a0;
+    color: var(--text-muted);
     padding: 18px 20px;
-    border-bottom: 1px solid #2a3044;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .apps-table td {
     padding: 16px 20px;
     font-size: 15px;
-    border-bottom: 1px solid #2a3044;
+    border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
 }
 
@@ -110,20 +117,18 @@
 }
 
 .apps-table tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--accent-muted);
 }
 
-/* Testo Azienda */
 .apps-table td strong {
-    color: #ffffff;
+    color: var(--text-primary);
     font-weight: 600;
 }
 
-/* Bottone Dettagli (all'interno della tabella) */
 .apps-table td button {
     background: transparent;
-    border: 1px solid #4a9eff;
-    color: #4a9eff;
+    border: 1px solid var(--accent);
+    color: var(--accent);
     padding: 6px 14px;
     border-radius: 6px;
     font-size: 13px;
@@ -133,27 +138,26 @@
 }
 
 .apps-table td button:hover {
-    background: #4a9eff;
+    background: var(--accent);
     color: white;
 }
 
 .actions-cell {
     display: flex;
-    gap: 8px; 
+    gap: 8px;
 }
 
 .btn-outline {
     background: transparent;
-    border: 1px solid #3498db;
-    color: #3498db;
+    border: 1px solid var(--accent) !important;
+    color: var(--accent) !important;
 }
 
 .btn-outline:hover {
-    background: #3498db;
-    color: white;
+    background: var(--accent) !important;
+    color: white !important;
 }
 
-/* Badge degli Stati (già definiti ma migliorati) */
 .status-badge {
     padding: 6px 12px;
     border-radius: 6px;
@@ -164,16 +168,16 @@
 
 .status-badge.sent { background: rgba(74, 158, 255, 0.15); color: #4a9eff; }
 .status-badge.interview { background: rgba(163, 113, 247, 0.15); color: #a371f7; }
+.status-badge.waiting { background: rgba(255, 159, 10, 0.15); color: #ff9f0a; }
 .status-badge.rejected { background: rgba(255, 69, 58, 0.15); color: #ff453a; }
-.status-badge.pending { background: rgba(255, 214, 10, 0.15); color: #ffd60a; }
+.status-badge.draft { background: rgba(142, 142, 147, 0.15); color: #8e8e93; }
 
-/* Caricamento */
 .loading {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 200px;
-    color: #8a90a0;
+    color: var(--text-muted);
     font-size: 18px;
 }
 
@@ -182,4 +186,3 @@
     flex-wrap: wrap;
     gap: 4px;
 }
-

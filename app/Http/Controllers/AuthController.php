@@ -45,10 +45,7 @@ class AuthController extends Controller
         }
 
         
-        $user = Auth::user();
-        // Invece di Auth::user(), recuperiamo l'utente direttamente dal database
-        //usando l'email che abbiamo appena validato
-        // $user = \App\Models\User::where('email', $credentials['email'])->first();
+        $user = \App\Models\User::find(Auth::id());
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'message' => 'Benvenuto',

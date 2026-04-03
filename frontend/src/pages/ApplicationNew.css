@@ -9,8 +9,8 @@
 }
 
 .header-section { margin-bottom: 30px; }
-.header-section h1 { color: #e0e4ee; margin-bottom: 8px; }
-.header-section p { color: #8a90a0; }
+.header-section h1 { color: var(--text-primary); margin-bottom: 8px; }
+.header-section p { color: var(--text-muted); }
 
 .app-form {
     display: flex;
@@ -19,15 +19,15 @@
 }
 
 .form-section {
-    background: #131825;
+    background: var(--bg-secondary);
     padding: 25px;
     border-radius: 12px;
-    border: 1px solid #2a3044;
+    border: 1px solid var(--border-color);
 }
 
 .form-section h3 {
     font-size: 16px;
-    color: #4a9eff;
+    color: var(--accent);
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -35,7 +35,7 @@
 }
 
 .step-num {
-    background: #4a9eff;
+    background: var(--accent);
     color: white;
     width: 24px;
     height: 24px;
@@ -46,7 +46,6 @@
     font-size: 12px;
 }
 
-/* Griglia per affiancare i campi */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -58,26 +57,29 @@
 
 .form-group label {
     font-size: 12px;
-    color: #8a90a0;
+    color: var(--text-muted);
     text-transform: uppercase;
     font-weight: 600;
 }
 
-.form-group input, 
-.form-group select, 
+.form-group input,
+.form-group select,
 .form-group textarea {
-    background: #1c2230;
-    border: 1px solid #2a3044;
-    color: white;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     padding: 12px;
     border-radius: 8px;
     outline: none;
     transition: border-color 0.2s;
 }
 
-.form-group input:focus { border-color: #4a9eff; }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--accent);
+}
 
-/* Bottoni */
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -86,22 +88,31 @@
 }
 
 .btn-primary {
-    background: #4a9eff;
+    background: var(--accent);
     color: white;
     border: none;
     padding: 12px 30px;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
+    transition: opacity 0.2s;
 }
+
+.btn-primary:hover { opacity: 0.85; }
 
 .btn-secondary {
     background: transparent;
-    border: 1px solid #2a3044;
-    color: #8a90a0;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
     padding: 12px 30px;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
 }
 
 .tags-available {
@@ -110,6 +121,8 @@
     gap: 10px;
     margin-bottom: 15px;
     padding: 10px 0;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .tag-option {
@@ -119,7 +132,7 @@
     cursor: pointer;
     font-size: 13px;
     transition: all 0.2s ease;
-    white-space: nowrap; /* Evita che il testo del tag si spezzi */
+    white-space: nowrap;
 }
 
 .tag-option:hover {
@@ -138,22 +151,22 @@
     gap: 10px;
     margin-top: 8px;
     padding-top: 15px;
-    border-top: 1px dashed #2a3044;
+    border-top: 1px dashed var(--border-color);
 }
 
 .new-tag-row input {
-    background: #0f1420;
-    border: 1px solid #2a3044;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 8px 12px;
-    color: white;
+    color: var(--text-primary);
     font-size: 13px;
     width: 200px;
     transition: border-color 0.2s;
 }
 
 .new-tag-row input:focus {
-    border-color: #4a9eff;
+    border-color: var(--accent);
     outline: none;
 }
 
@@ -161,11 +174,7 @@
     font-style: italic;
     opacity: 0.8;
     font-size: 13px;
-}
-
-.tags-available {
-    max-height: 200px;
-    overflow-y: auto;
+    color: var(--text-muted);
 }
 
 .file-input-wrapper {
@@ -175,17 +184,17 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    border: 2px dashed #343a40;
+    border: 2px dashed var(--border-color);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-tertiary);
     transition: all 0.3s ease;
     min-height: 100px;
     text-align: center;
 }
 
 .file-input-wrapper:hover {
-    border-color: #4a9eff;
-    background: rgba(74, 158, 255, 0.05);
+    border-color: var(--accent);
+    background: var(--accent-muted);
 }
 
 .file-input-wrapper input[type="file"] {
@@ -196,10 +205,9 @@
     cursor: pointer;
 }
 
-/* Testo finto per l'input */
 .file-input-wrapper::before {
     content: '📁 Clicca o trascina qui il file';
-    color: #888;
+    color: var(--text-muted);
     font-size: 14px;
     margin-bottom: 10px;
 }
@@ -207,11 +215,11 @@
 .file-name {
     margin-top: 8px;
     padding: 4px 12px;
-    background: #1e272e;
+    background: var(--accent-muted);
     border-radius: 20px;
     font-size: 12px;
-    color: #4cd137;
-    border: 1px solid #4cd137;
-    z-index: 1; /* Sopra l'input invisibile */
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    z-index: 1;
 }
 

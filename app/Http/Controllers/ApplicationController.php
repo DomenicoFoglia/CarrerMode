@@ -15,7 +15,7 @@ class ApplicationController extends Controller
     public function index()
     {
         //Recuperiamo l'utente
-        $user = Auth::user();
+        $user = \App\Models\User::find(Auth::id());
         //Recuperiamo le candidature e carichiamo anche i tag
         $applications = $user->applications()->with('tags')->latest()->get();
 
@@ -48,9 +48,9 @@ class ApplicationController extends Controller
             'tags.*' => 'integer|exists:tags,id,user_id,' . Auth::id()
         ]);
 
-        $user = Auth::user();
+        $user = \App\Models\User::find(Auth::id());
 
-        $application = Auth::user()->applications()->create(
+        $application = $user->applications()->create(
             collect($validated)->except('tags')->toArray()
         );
 
@@ -70,7 +70,7 @@ class ApplicationController extends Controller
      */
     public function show(string $id)
     {
-        $user = Auth::user();
+        $user = \App\Models\User::find(Auth::id());
 
         //Cerca la candidatura tra quelle dell'utente, se la trova la ritorna altrimenti, con 
         //la funzione findOrFail(), ritorna direttamente 404
@@ -87,7 +87,7 @@ class ApplicationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = Auth::user();
+        $user = \App\Models\User::find(Auth::id());
 
         $application = $user->applications()->findOrFail($id);
 
@@ -129,7 +129,7 @@ class ApplicationController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = Auth::user();
+        $user = \App\Models\User::find(Auth::id());
 
         $application = $user->applications()->findOrFail($id);
 
@@ -142,7 +142,7 @@ class ApplicationController extends Controller
 
     public function stats()
     {
-        $user = Auth::user();
+        $user = \App\Models\User::find(Auth::id());
 
         // 1. Otteniamo i conteggi per stato in un'unica query
         $statusCounts = $user->applications()

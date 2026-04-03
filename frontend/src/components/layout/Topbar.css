@@ -1,11 +1,11 @@
 .topbar {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
     padding: 0 1.5rem;
-    background-color: #111522;
-    border-bottom: 1px solid #2a3044;
-    height: 100%; 
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    height: 100%;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -14,56 +14,51 @@
 .topbar-logo {
     font-weight: bold;
     font-size: 1.3rem;
-    color: #2563eb;
+    color: var(--accent);
     letter-spacing: -0.5px;
-    /* flex: 1; */
 }
 
 .topbar-nav {
     display: flex;
     gap: 1.5rem;
-    /* flex: 2;  */
-    /* justify-content: center; */
 }
 
 .topbar-link {
     padding: 4px 12px;
     font-size: 16px;
-    color: #8a90a0;
+    color: var(--text-muted);
     text-decoration: none;
     border-radius: 4px;
     transition: all 0.15s;
 }
 
 .topbar-link:hover {
-    color: #c8cdd8;
-    background: #1e2538;
+    color: var(--text-secondary);
+    background: var(--accent-muted);
 }
 
 .topbar-link.active {
-    background: #1e2538;
-    color: #fff;
-    border-bottom: 2px solid #2563eb;
+    background: var(--accent-muted);
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--accent);
 }
 
 .topbar-user-section {
     display: flex;
     align-items: center;
     gap: 1rem;
-    /* flex: 1;
-    justify-content: flex-end;  */
 }
 
 .topbar-user-section span {
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
 .logout-link {
-    background-color: #f1f5f9;
+    background-color: var(--accent-muted);
     border: none;
-    color: #64748b;
+    color: var(--text-muted);
     padding: 0.4rem 1rem;
     border-radius: 8px;
     cursor: pointer;
@@ -73,6 +68,6 @@
 }
 
 .logout-link:hover {
-    background-color: #fee2e2;
-    color: #ef4444;
+    background-color: #2a1414;
+    color: #e05a5a;
 }

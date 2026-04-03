@@ -208,7 +208,7 @@ function Dashboard() {
                                     <div className={`reminder-dot ${rem.sent ? 'sent' : 'pending'}`}></div>
                                     <div className="reminder-info">
                                         <span className="reminder-title">{rem.title}</span>
-                                        <span className="reminder-company">{rem.application?.company || '—'}</span>
+                                        <span className="reminder-company">{rem.application?.company || '-'}</span>
                                         <span className="reminder-date">
                                             {new Date(rem.remind_at).toLocaleDateString('it-IT')}
                                         </span>

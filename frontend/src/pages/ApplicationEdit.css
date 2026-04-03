@@ -1,0 +1,10 @@
+.edit-badge {
+    display: inline-block;
+    background: var(--accent-muted);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+}

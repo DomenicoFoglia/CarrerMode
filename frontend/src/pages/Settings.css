@@ -1,18 +1,29 @@
 .settings-page {
     padding: 24px;
-    color: white;
+    color: var(--text-primary);
     animation: fadeIn 0.5s ease;
 }
 
+.settings-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
 .settings-section {
-    background: #131825;
-    border: 1px solid #2a3044;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
 }
 
-/* LA GRIGLIA */
+.settings-section h3 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
 .theme-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -20,9 +31,8 @@
     margin-top: 20px;
 }
 
-/* LA CARD */
 .theme-card {
-    background: #1a1f2e;
+    background: var(--bg-tertiary);
     border: 2px solid transparent;
     border-radius: 10px;
     padding: 12px;
@@ -31,31 +41,28 @@
     text-align: center;
 }
 
-/* Evidenzia il tema attivo */
 .theme-card.active {
-    border-color: #4a9eff;
-    background: #1e2536;
+    border-color: var(--accent);
+    background: var(--accent-muted);
 }
 
 .theme-card:hover {
-    background: #252b3d;
+    background: var(--accent-muted);
 }
 
-/* IL RETTANGOLO COLORATO */
 .theme-preview {
     height: 50px;
     border-radius: 6px;
     margin-bottom: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--border-color);
 }
 
 .theme-card span {
     font-size: 13px;
-    color: #c8cdd8;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
-/* Form Group e Input */
 .password-form {
     display: flex;
     flex-direction: column;
@@ -69,30 +76,29 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #8a90a0;
+    color: var(--text-muted);
     margin-bottom: 8px;
 }
 
 .form-group input {
     width: 100%;
-    background: #0f1420; /* Più scuro dello sfondo della card */
-    border: 1px solid #2a3044;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 12px 16px;
-    color: #fff;
+    color: var(--text-primary);
     font-size: 14px;
     transition: all 0.2s ease;
     outline: none;
 }
 
 .form-group input:focus {
-    border-color: #4a9eff;
-    box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
-/* IL BOTTONE COERENTE */
 .btn-save {
-    background: #4a9eff;
+    background: var(--accent);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -102,13 +108,12 @@
     cursor: pointer;
     transition: all 0.2s ease;
     margin-top: 10px;
-    width: fit-content; /* Non occupa tutta la riga */
+    width: fit-content;
 }
 
 .btn-save:hover:not(:disabled) {
-    background: #3b82f6;
+    opacity: 0.85;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
 }
 
 .btn-save:active:not(:disabled) {
@@ -116,8 +121,8 @@
 }
 
 .btn-save:disabled {
-    background: #2a3044;
-    color: #8a90a0;
+    background: var(--border-color);
+    color: var(--text-muted);
     cursor: not-allowed;
     opacity: 0.7;
 }

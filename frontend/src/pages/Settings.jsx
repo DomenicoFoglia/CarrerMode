@@ -25,17 +25,22 @@ function Settings(){
         { id: 'forest', name: 'Forest', color: '#064e3b' },
         { id: 'ember', name: 'Ember', color: '#451a03' },
         { id: 'crimson', name: 'Crimson', color: '#450a0a' },
-    ];
+        { id: 'light', name: 'Light', color: '#dbeafe' },
+        { id: 'light-warm', name: 'Warm', color: '#fef3c7' },
+        { id: 'light-green', name: 'Nature', color: '#dcfce7' },
+        { id: 'royale', name: 'Royale', color: '#f7b538' },
+    ]
 
-    const handleThemeChange = async (themeId) =>{
-        try{
-            const response = await updateTheme(themeId);
-            //Aggiorniamo lo stato globale
-            setUser({...user, theme: response.data.theme});
-        }catch (error){
-            console.error('Errore cambio tema',error);
+    const handleThemeChange = async (themeId) => {
+        try {
+            await updateTheme(themeId)
+            localStorage.setItem('theme', themeId)
+            document.documentElement.setAttribute('data-theme', themeId)
+            setUser({ ...user, theme: themeId })
+        } catch (error) {
+            console.error('Errore cambio tema', error)
         }
-    };
+    }
 
     const handlePasswordSubmit = async (e) =>{
         e.preventDefault();

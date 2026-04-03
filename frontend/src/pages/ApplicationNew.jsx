@@ -235,7 +235,7 @@ function ApplicationNew() {
                                 }
                             }}
                         />
-                        <span style={{fontSize: '17px', color: '#4a5060'}}>Premi Invio per creare</span>
+                        <span style={{fontSize: '17px', color: 'var(--text-hint)'}}>Premi Invio per creare</span>
                     </div>
                 </section>
 

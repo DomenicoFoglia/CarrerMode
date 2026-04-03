@@ -10,10 +10,13 @@ use Illuminate\Validation\Rules\Password;
 class UserController extends Controller
 {
     public function updateTheme(Request $request){
-        $user = Auth::user();
+        // $user = Auth::user();
+        // Auth::user() restituisce un oggetto che a volte non ha il metodo update
+        //Lo sostituiamo con:
+        $user = \App\Models\User::find(Auth::id());
 
         $validated = $request->validate([
-            'theme' => 'required|in:midnight,forest,ember,steel,crimson,violet'
+            'theme' => 'required|in:midnight,forest,ember,steel,crimson,violet,light,light-warm,light-green,royale'
         ]);
 
         $user->update(['theme' => $validated['theme']]);
@@ -22,7 +25,7 @@ class UserController extends Controller
     }
 
     public function updatePassword(Request $request){
-        $user = Auth::user();
+        $user = \App\Models\User::find(Auth::id());
 
         //Avremmo potuto usare anche la pipeline | ma con l'array possiamo mescolare piu facilmente stringhe e oggetti
         $validated = $request->validate([

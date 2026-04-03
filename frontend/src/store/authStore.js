@@ -1,19 +1,31 @@
 import { create } from 'zustand'
 
+const applyTheme = (theme) => {
+    document.documentElement.setAttribute('data-theme', theme || 'midnight')
+}
+
+// Applica il tema salvato subito al caricamento della pagina
+applyTheme(localStorage.getItem('theme') || 'midnight')
+
 const useAuthStore = create((set) => ({
-    // stato iniziale
     user: null,
     token: localStorage.getItem('token') || null,
     isAuthenticated: !!localStorage.getItem('token'),
 
-    // azioni per modificare lo stato
-    setUser: (user) => set({ user }),
+    setUser: (user) => {
+        if (user?.theme) {
+            applyTheme(user.theme)
+            localStorage.setItem('theme', user.theme)
+        }
+        set({ user })
+    },
     setToken: (token) => {
         localStorage.setItem('token', token)
         set({ token, isAuthenticated: true })
     },
     logout: () => {
-    localStorage.removeItem('token')
+        localStorage.removeItem('token')
+        localStorage.removeItem('theme') // al logout rimuove il tema scelto dal localstorage
         set({ user: null, token: null, isAuthenticated: false })
     },
 }))

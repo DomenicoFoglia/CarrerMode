@@ -6,7 +6,7 @@
 .stats-title {
     font-size: 18px;
     font-weight: 500;
-    color: #e0e4ee;
+    color: var(--text-primary);
     margin-bottom: 20px;
 }
 
@@ -18,9 +18,9 @@
 }
 
 .stat-card {
-    background: #131825;
-    border: 1px solid #2a3044;
-    border-left: 4px solid #2a3044;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--border-color);
     border-radius: 8px;
     padding: 16px;
     transition: transform 0.2s ease-in-out;
@@ -39,7 +39,7 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: .5px;
-    color: #4a5060;
+    color: var(--text-hint);
     margin-bottom: 8px;
     font-weight: 400;
 }
@@ -48,7 +48,7 @@
     display: block;
     font-size: 28px;
     font-weight: 500;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .charts-grid {
@@ -62,8 +62,8 @@
 }
 
 .chart-card {
-    background: #131825;
-    border: 1px solid #2a3044;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 20px;
 }
@@ -72,7 +72,7 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: .5px;
-    color: #8a90a0;
+    color: var(--text-muted);
     margin-bottom: 16px;
     font-weight: 400;
 }
