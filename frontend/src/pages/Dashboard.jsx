@@ -6,10 +6,20 @@ import { getReminders } from '../api/reminders'
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
+    //Statistiche nelle card
     const [stats, setStats] = useState(null);
+    const [cardSubtitleIndex, setCardSubtitleIndex] = useState(0);
+    //Candidature
     const [applications, setApplications] = useState([]);
+    //Reminders
     const [reminders, setReminders] = useState([]);
     const [selectedReminder, setSelectedReminder] = useState(null);
+    //Paginazione candidature e reminder
+    const [currentPageApps, setCurrentPageApps] = useState(1);
+    const [currentPageReminders, setCurrentPageReminders] = useState(1);
+    const itemsPerPage = 5;
+
+
     const [loading, setLoading] = useState(true); // Stato per il caricamento
 
     useEffect(() => {
@@ -36,6 +46,28 @@ function Dashboard() {
         fetchDashboardData();
     }, []);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCardSubtitleIndex(prev => (prev + 1) % 2)
+        }, 3000)
+        return () => clearInterval(interval)
+    }, [])
+
+    //Dati aggiuntivi delle card
+    const tassoColloqui = stats?.total > 0 
+        ? ((stats.interview / stats.total) * 100).toFixed(1) 
+        : 0
+
+    const percentualeRifiutate = stats?.total > 0 
+        ? ((stats.rejected / stats.total) * 100).toFixed(1) 
+        : 0
+
+    //Paginazione
+    const totalPages= Math.ceil(applications.length / itemsPerPage);
+    const totalePagesReminders = Math.ceil(reminders.length / itemsPerPage);
+    const paginatedApps = applications.slice( (currentPageApps - 1) * itemsPerPage, currentPageApps * itemsPerPage);
+    const paginatedReminders = reminders.slice((currentPageReminders - 1) * itemsPerPage, currentPageReminders * itemsPerPage);
+
     const navigate = useNavigate();
 
     if (loading) return <div className="loading">Caricamento in corso...</div>;
@@ -44,23 +76,47 @@ function Dashboard() {
         <div className="dashboard-container">
             <h1>Dashboard</h1>
             <p className="subtitle">Bentornato! Ecco il riepilogo delle tue attività.</p>
-            {/* Sezione Stats */}
+            {/* Sezione Card */}
             <div className="stats-grid">
                 <div className="stat-card">
                     <h3>Totale Candidature</h3>
                     <span className="number">{stats?.total || 0}</span>
+                    <span className="card-subtitle animated">
+                        {cardSubtitleIndex === 0 
+                            ? `+${stats?.this_month || 0} questo mese`
+                            : `${stats?.sent || 0} inviate`
+                        }
+                    </span>
                 </div>
-                <div className="stat-card">
-                    <h3>Inviate</h3>
-                    <span className="number">{stats?.sent || 0}</span>
+                <div className="stat-card green">
+                    <h3>Colloqui ottenuti</h3>
+                    <span className="number">{stats?.interview || 0}</span>
+                    <span className="card-subtitle animated">
+                        {cardSubtitleIndex === 0
+                            ? `Tasso: ${tassoColloqui}%`
+                            : `Su ${stats?.total || 0} candidature`
+                        }
+                    </span>
                 </div>
-                <div className="stat-card">
-                    <h3>Colloqui</h3>
-                    <span className="number">{stats?.interviews || 0}</span>
+                <div className="stat-card orange">
+                    <h3>In attesa</h3>
+                    <span className="number">{stats?.waiting || 0}</span>
+                    <span className="card-subtitle animated">
+                        {cardSubtitleIndex === 0
+                            ? `${stats?.expiring_reminders || 0} scadono presto`
+                            : `Richiedono follow-up`
+                        }
+                    </span>
                 </div>
-                <div className="stat-card">
+                <div className="stat-card red">
                     <h3>Rifiutate</h3>
                     <span className="number">{stats?.rejected || 0}</span>
+                    <span className="card-subtitle animated">
+                        {cardSubtitleIndex === 0
+                            ? `${percentualeRifiutate}% del totale`
+                            : `${stats?.total - stats?.rejected || 0} ancora attive`
+                        }
+                    </span>
                 </div>
             </div>
 
@@ -82,7 +138,7 @@ function Dashboard() {
                         </thead>
                         <tbody>
                             {applications.length > 0 ? (
-                                applications.map(app => (
+                                paginatedApps.map(app => (
                                     <tr key={app.id}>
                                         <td>{app.company}</td>
                                         <td>{app.role}</td>
@@ -116,6 +172,21 @@ function Dashboard() {
                                     <td colSpan="5">Nessuna candidatura trovata.</td>
                                 </tr>
                             )}
+                            {totalPages > 1 && (
+                                <div className="dashboard-pagination">
+                                    <button 
+                                        onClick={() => setCurrentPageApps(p => p - 1)} 
+                                        disabled={currentPageApps === 1}
+                                        className="page-btn"
+                                    >←</button>
+                                    <span className="page-info">{currentPageApps} / {totalPages}</span>
+                                    <button 
+                                        onClick={() => setCurrentPageApps(p => p + 1)} 
+                                        disabled={currentPageApps === totalPages}
+                                        className="page-btn"
+                                    >→</button>
+                                </div>
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -128,7 +199,7 @@ function Dashboard() {
                     </div>
                     <div className="reminders-list">
                         {reminders.length > 0 ? (
-                            reminders.slice(0, 5).map(rem => (
+                            paginatedReminders.map(rem => (
                                 <div 
                                     key={rem.id} 
                                     className={`reminder-item ${selectedReminder?.id === rem.id ? 'selected' : ''}`}
@@ -147,6 +218,21 @@ function Dashboard() {
                         ) : (
                             <p className="empty-reminders">Nessun reminder.</p>
                         )}
+                        {totalePagesReminders > 1 && (
+                            <div className="dashboard-pagination">
+                                <button 
+                                    onClick={() => setCurrentPageReminders(p => p - 1)} 
+                                    disabled={currentPageReminders === 1}
+                                    className="page-btn"
+                                >←</button>
+                                <span className="page-info">{currentPageReminders} / {totalePagesReminders}</span>
+                                <button 
+                                    onClick={() => setCurrentPageReminders(p => p + 1)} 
+                                    disabled={currentPageReminders === totalePagesReminders}
+                                    className="page-btn"
+                                >→</button>
+                            </div>
+                            )}
                     </div>
 
                     {/* Pannello dettaglio */}
@@ -166,6 +252,34 @@ function Dashboard() {
                     )}
                 </aside>
 
+                {/* Pannello stastistiche */}
+                <div className="dashboard-status-chart">
+                    <h2>Stato candidature</h2>
+                    {stats && (
+                        <div className="mini-bars">
+                            {[
+                                { label: 'Inviate', value: stats.sent, color: '#4a9eff' },
+                                { label: 'Colloquio', value: stats.interview, color: '#3dba7e' },
+                                { label: 'In attesa', value: stats.waiting, color: '#e8a44a' },
+                                { label: 'Rifiutate', value: stats.rejected, color: '#e05a5a' },
+                            ].map(item => (
+                                <div key={item.label} className="mini-bar-row">
+                                    <span className="mini-bar-label">{item.label}</span>
+                                    <div className="mini-bar-track">
+                                        <div 
+                                            className="mini-bar-fill"
+                                            style={{ 
+                                                width: stats.total > 0 ? `${(item.value / stats.total) * 100}%` : '0%',
+                                                background: item.color 
+                                            }}
+                                        />
+                                    </div>
+                                    <span className="mini-bar-value">{item.value}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>           
         </div>
     );

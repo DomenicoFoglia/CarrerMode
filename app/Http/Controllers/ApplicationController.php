@@ -157,6 +157,21 @@ class ApplicationController extends Controller
             ->groupBy('month')
             ->orderBy('month')
             ->get();
+        
+        // 3. Candidature questo mese
+        $thisMonth = $user->applications()
+            ->whereMonth('applied_at', date('m'))
+            ->whereYear('applied_at', date('Y'))
+            ->count();
+
+        // 4. Reminder in scadenza nei prossimi 7 giorni
+        $expiringReminders = \App\Models\Reminder::whereHas('application', function($q) {
+            $q->where('user_id', Auth::id());
+        })
+        ->where('sent', false)
+        ->where('remind_at', '<=', now()->addDays(7))
+        ->count();
+
 
         $months = [
             1 => 'Gen', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mag', 6 => 'Giu',
@@ -172,7 +187,9 @@ class ApplicationController extends Controller
             'by_month'  => $monthlyStats->map(fn($item) => [
                 'name'  => $months[$item->month],
                 'count' => $item->count
-            ])
+            ]),
+            'this_month' => $thisMonth,
+            'expiring_reminders' => $expiringReminders,
         ];
 
         return response()->json($stats);

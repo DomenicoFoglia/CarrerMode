@@ -10,6 +10,7 @@
     margin-bottom: 20px;
 }
 
+/* Card con statistiche */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -41,6 +42,26 @@
     font-weight: bold;
     margin-top: 10px;
     display: block;
+}
+
+.stat-card.green { border-left-color: #3dba7e; }
+.stat-card.orange { border-left-color: #e8a44a; }
+.stat-card.red { border-left-color: #e05a5a; }
+
+.card-subtitle {
+    display: block;
+    font-size: 18px;
+    color: #4a9eff;
+    margin-top: 6px;
+}
+
+.card-subtitle.animated {
+    animation: fadeSlide 0.5s ease;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Sezione Tabella Candidature Recenti */
@@ -83,6 +104,42 @@
 
 .apps-table tr:hover td {
     background: rgba(74, 158, 255, 0.05);
+}
+
+/* Paginazione */
+.dashboard-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #2a3044;
+}
+
+.page-btn {
+    background: #1e2538;
+    border: 1px solid #2a3044;
+    color: #8a90a0;
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: #4a9eff;
+    color: #4a9eff;
+}
+
+.page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-size: 12px;
+    color: #4a5060;
 }
 
 .status-badge {
@@ -145,6 +202,8 @@
     margin-top: 20px;
 }
 
+
+/* Reminders */
 .dashboard-reminders {
     margin-top: 10px;
     background: #131825;
@@ -286,4 +345,62 @@
     color: #4a5060;
     text-align: center;
     padding: 20px 0;
+}
+
+/* Pannello Statistiche */
+.dashboard-status-chart {
+    background: #131825;
+    border: 1px solid #2a3044;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.dashboard-status-chart h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #8a90a0;
+    margin-bottom: 16px;
+    font-weight: 400;
+}
+
+.mini-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mini-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mini-bar-label {
+    font-size: 11px;
+    color: #8a90a0;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.mini-bar-track {
+    flex: 1;
+    background: #1e2538;
+    border-radius: 2px;
+    height: 6px;
+    overflow: hidden;
+}
+
+.mini-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.mini-bar-value {
+    font-size: 11px;
+    color: #4a5060;
+    width: 20px;
+    text-align: right;
 }
