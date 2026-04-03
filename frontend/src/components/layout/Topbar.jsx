@@ -28,7 +28,7 @@ function Topbar(){
                 <NavLink to="/" end className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Dashboard</NavLink>
                 <NavLink to="/applications" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Candidature</NavLink>
                 <NavLink to="/statistics" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Statistiche</NavLink>
-                <NavLink to="/reminders" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Reminder</NavLink>
+                <NavLink to="/reminders" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Promemoria</NavLink>
             </nav>
 
             <div className="topbar-user-section">
