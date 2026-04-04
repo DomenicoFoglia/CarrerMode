@@ -4,6 +4,11 @@
     animation: fadeIn 0.5s ease;
 }
 
+.settings-title,
+.settings-section h3 {
+    font-family: var(--font-titles);
+}
+
 .settings-title {
     font-size: 18px;
     font-weight: 500;

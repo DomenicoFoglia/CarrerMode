@@ -9,7 +9,7 @@
 }
 
 .header-section { margin-bottom: 30px; }
-.header-section h1 { color: var(--text-primary); margin-bottom: 8px; }
+.header-section h1 { color: var(--text-primary); margin-bottom: 8px; font-family: var(--font-titles); }
 .header-section p { color: var(--text-muted); }
 
 .app-form {

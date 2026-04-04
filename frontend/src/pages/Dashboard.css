@@ -3,6 +3,13 @@
     animation: fadeIn 0.5s ease;
 }
 
+.dashboard-container h1,
+.recent-applications h2,
+.dashboard-reminders h2,
+.dashboard-status-chart h2 {
+    font-family: var(--font-titles);
+}
+
 .dashboard-container h1 {
     font-size: 18px;
     font-weight: 500;

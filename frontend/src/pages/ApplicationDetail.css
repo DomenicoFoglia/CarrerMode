@@ -19,6 +19,7 @@
 }
 
 .header-info h1 {
+    font-family: var(--font-titles);
     font-size: clamp(20px, 5vw, 28px);
     color: var(--text-primary);
     margin: 0;
@@ -109,6 +110,7 @@
 }
 
 .detail-card h3 {
+    font-family: var(--font-titles);
     color: var(--accent);
     font-size: 13px;
     text-transform: uppercase;

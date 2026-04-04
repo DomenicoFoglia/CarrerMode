@@ -4,6 +4,7 @@
 }
 
 .stats-title {
+    font-family: var(--font-titles);
     font-size: 18px;
     font-weight: 500;
     color: var(--text-primary);

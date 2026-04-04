@@ -12,6 +12,7 @@
 }
 
 .topbar-logo {
+    font-family: var(--font-titles);
     font-weight: bold;
     font-size: 1.3rem;
     color: var(--accent);

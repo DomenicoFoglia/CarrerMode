@@ -16,6 +16,7 @@
 }
 
 .apps-header h1 {
+    font-family: var(--font-titles);
     font-size: 24px;
     font-weight: 600;
     color: var(--text-primary);
