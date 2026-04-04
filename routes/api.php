@@ -45,3 +45,6 @@ Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destro
 //Opzioni Utente
 Route::put('/user/theme', [UserController::class, 'updateTheme'])->middleware('auth:sanctum');
 Route::put('/user/password', [UserController::class, 'updatePassword'])->middleware('auth:sanctum');
+
+
+

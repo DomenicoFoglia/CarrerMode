@@ -1,86 +1,89 @@
 import { useEffect, useState } from 'react';
 import './Applications.css';
 import { getApplications } from '../api/applications';
+import { getTags } from '../api/tags';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-
 
 function Applications() {
     const [searchParams] = useSearchParams();
-    
+    const navigate = useNavigate();
+
     const [applications, setApplications] = useState([]);
+    const [allTags, setAllTags] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    //Stati per la ricerca
     const [search, setSearch] = useState('');
     const [filterStatus, setFilterStatus] = useState(searchParams.get('status') || 'all');
-
-    //Logica di filtrraggio
-    const filteredApps = applications.filter(app => {
-        const searchTerm = search.toLowerCase();
-
-        //Ricerca per azienda o ruolo
-        const matchSearch = 
-            app.company.toLowerCase().includes(searchTerm) || 
-            app.role.toLowerCase().includes(searchTerm);
-
-            //Filtro per stato
-            const matchStatus = filterStatus === 'all' || app.status === filterStatus;
-
-            return matchSearch && matchStatus;
-    });
-
-    const navigate = useNavigate();
+    const [filterTags, setFilterTags] = useState([]);
+    const [tagMode, setTagMode] = useState('OR');
+    const [tagPanelOpen, setTagPanelOpen] = useState(false);
 
     useEffect(() => {
         setFilterStatus(searchParams.get('status') || 'all')
     }, [searchParams])
-    
-    useEffect(() =>{
-        const fetchApps = async () => {
-            try{
-                const response = await getApplications();
-                const data = response.data.data || response.data;
-                setApplications(data);
-                console.log("Candidataure ricevute dal server:", data)
-            }catch(error){
-                console.error("Errore nel caricamento delle candidature:", error);
-            }finally{
-                setLoading(false);
-            }
-        };
 
-        fetchApps();
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [appsRes, tagsRes] = await Promise.all([
+                    getApplications(),
+                    getTags()
+                ])
+                setApplications(appsRes.data.data || appsRes.data)
+                setAllTags(tagsRes.data.tags || tagsRes.data)
+            } catch (error) {
+                console.error("Errore:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchData()
     }, []);
 
+    const toggleTag = (tag) => {
+        const already = filterTags.find(t => t.id === tag.id)
+        if (already) {
+            setFilterTags(filterTags.filter(t => t.id !== tag.id))
+        } else {
+            setFilterTags([...filterTags, tag])
+        }
+    }
+
+    const filteredApps = applications.filter(app => {
+        const searchTerm  = search.toLowerCase()
+        const matchSearch = app.company.toLowerCase().includes(searchTerm) ||
+                            app.role.toLowerCase().includes(searchTerm)
+        const matchStatus = filterStatus === 'all' || app.status === filterStatus
+        const matchTag = filterTags.length === 0 || (
+            tagMode === 'OR'
+                ? filterTags.some(ft => app.tags?.some(t => t.id === ft.id))
+                : filterTags.every(ft => app.tags?.some(t => t.id === ft.id))
+        )
+        return matchSearch && matchStatus && matchTag
+    });
+
     if (loading) return <div className="loading">Caricamento candidature...</div>;
-    
+
     return (
         <div className='applications-container'>
             <div className="apps-header">
                 <h1>Le mie candidature</h1>
-                <button 
-                    className="btn-add" 
-                    onClick={() => navigate('/applications/new')}>
+                <button className="btn-add" onClick={() => navigate('/applications/new')}>
                     Nuova Candidatura
                 </button>
             </div>
 
-            {/* Filtri */}
             <div className="filters-bar">
                 <div className="search-box">
-                    <input 
-                        type="text" 
-                        placeholder="Cerca per azienda o ruolo..." 
+                    <input
+                        type="text"
+                        placeholder="Cerca per azienda o ruolo..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-
                 <div className="status-filters">
-                    <select 
-                        value={filterStatus} 
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                    >
+                    <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
                         <option value="all">Tutti gli stati</option>
                         <option value="sent">Inviata</option>
                         <option value="waiting">In attesa</option>
@@ -89,11 +92,97 @@ function Applications() {
                         <option value="draft">Bozza</option>
                     </select>
                 </div>
-                
+                <button
+                    className={`tag-filter-btn ${tagPanelOpen ? 'open' : ''}`}
+                    onClick={() => setTagPanelOpen(!tagPanelOpen)}
+                >
+                    Filtra per tag
+                    {filterTags.length > 0 && (
+                        <span className="tag-filter-count">{filterTags.length}</span>
+                    )}
+                </button>
                 <div className="results-count">
                     Trovate: <strong>{filteredApps.length}</strong>
                 </div>
             </div>
+
+            {/* Pannello tag */}
+            {tagPanelOpen && (
+                <div className="tag-panel">
+                    <div className="tag-panel-header">
+                        <span className="tag-panel-title">Seleziona uno o più tag</span>
+                        <div className="tag-mode-toggle">
+                            <span className="tag-mode-label">Modalità:</span>
+                            <div className="toggle-group">
+                                <button
+                                    className={`toggle-btn ${tagMode === 'OR' ? 'active-or' : ''}`}
+                                    onClick={() => setTagMode('OR')}
+                                >
+                                    Almeno uno (OR)
+                                </button>
+                                <button
+                                    className={`toggle-btn ${tagMode === 'AND' ? 'active-and' : ''}`}
+                                    onClick={() => setTagMode('AND')}
+                                >
+                                    Tutti (AND)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="tag-pill-list">
+                        {allTags.map(tag => {
+                            const isSelected = filterTags.find(t => t.id === tag.id)
+                            return (
+                                <span
+                                    key={tag.id}
+                                    className={`tag-pill ${isSelected ? 'selected' : ''}`}
+                                    style={{
+                                        backgroundColor: isSelected ? tag.color + '30' : tag.color + '12',
+                                        color: tag.color,
+                                        borderColor: isSelected ? tag.color : tag.color + '60',
+                                        boxShadow: isSelected ? `0 0 0 2px ${tag.color}` : 'none'
+                                    }}
+                                    onClick={() => toggleTag(tag)}
+                                >
+                                    {tag.name}
+                                </span>
+                            )
+                        })}
+                    </div>
+
+                    {filterTags.length > 0 && (
+                        <div className="tag-panel-footer">
+                            <span className="tag-panel-footer-label">Attivi:</span>
+                            <div className="active-tags-row">
+                                {filterTags.map((ft, index) => (
+                                    <span key={ft.id} style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+                                        {index > 0 && (
+                                            <span className={`op-badge ${tagMode === 'OR' ? 'op-or' : 'op-and'}`}>
+                                                {tagMode}
+                                            </span>
+                                        )}
+                                        <span
+                                            className="active-tag-pill"
+                                            style={{
+                                                backgroundColor: ft.color + '22',
+                                                color: ft.color,
+                                                border: `1px solid ${ft.color}`
+                                            }}
+                                            onClick={() => toggleTag(ft)}
+                                        >
+                                            {ft.name} ×
+                                        </span>
+                                    </span>
+                                ))}
+                            </div>
+                            <button className="clear-tags-btn" onClick={() => setFilterTags([])}>
+                                Cancella tutti
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className="apps-table-container">
                 <table className="apps-table">
@@ -107,7 +196,6 @@ function Applications() {
                             <th>Azioni</th>
                         </tr>
                     </thead>
-                    
                     <tbody>
                         {filteredApps.length > 0 ? (
                             filteredApps.map(app => (
@@ -126,8 +214,12 @@ function Applications() {
                                                 app.tags.map(tag => (
                                                     <span
                                                         key={tag.id}
-                                                        className="tag-badge"
-                                                        style={{ backgroundColor: tag.color + '22', color: tag.color, border: `1px solid ${tag.color}` }}
+                                                        className={`tag-badge ${filterTags.find(t => t.id === tag.id) ? 'tag-active' : ''}`}
+                                                        style={{
+                                                            backgroundColor: tag.color + '22',
+                                                            color: tag.color,
+                                                            border: `1px solid ${tag.color}`
+                                                        }}
                                                     >
                                                         {tag.name}
                                                     </span>
@@ -138,15 +230,15 @@ function Applications() {
                                         </div>
                                     </td>
                                     <td className="actions-cell">
-                                        <button 
+                                        <button
                                             className="btn-small"
-                                            onClick={() => navigate(`/applications/${app.id}`)}
+                                            onClick={(e) => { e.stopPropagation(); navigate(`/applications/${app.id}`) }}
                                         >
                                             Dettagli
                                         </button>
-                                        <button 
+                                        <button
                                             className="btn-small btn-outline"
-                                            onClick={(e) => { e.stopPropagation(); navigate(`/applications/${app.id}/edit`)} }
+                                            onClick={(e) => { e.stopPropagation(); navigate(`/applications/${app.id}/edit`) }}
                                         >
                                             Modifica
                                         </button>
@@ -156,8 +248,8 @@ function Applications() {
                         ) : (
                             <tr>
                                 <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
-                                    {search || filterStatus !== 'all' 
-                                        ? "Nessun risultato corrisponde ai filtri selezionati." 
+                                    {search || filterStatus !== 'all' || filterTags.length > 0
+                                        ? "Nessun risultato corrisponde ai filtri selezionati."
                                         : "Non hai ancora inserito nessuna candidatura."}
                                 </td>
                             </tr>
