@@ -2,8 +2,8 @@ import ApplicationDetail from '../pages/ApplicationDetail';
 import api from './axios'
 
 // Recupera la lista completa per la tabella
-export const getApplications = () => {
-    return api.get('/applications');
+export const getApplications = ( params = {}) => {
+    return api.get('/applications', {params});
 }
 
 // Recupoera una applicazione specifica in modo dinamico

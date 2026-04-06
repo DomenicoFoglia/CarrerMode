@@ -18,18 +18,36 @@ function Applications() {
     const [tagMode, setTagMode] = useState('OR');
     const [tagPanelOpen, setTagPanelOpen] = useState(false);
 
+    const [perPage, setPerPage] = useState(15);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
+    const [total, setTotal] = useState(0);
+
     useEffect(() => {
         setFilterStatus(searchParams.get('status') || 'all')
     }, [searchParams])
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchApps = async () => {
+            setLoading(true)
             try {
+                const params = { page: currentPage, per_page: perPage }
+                if (filterStatus !== 'all') params.status = filterStatus
+                if (search.trim())          params.search = search.trim()
+                if (filterTags.length > 0) {
+                    params.tags     = filterTags.map(t => t.id).join(',')
+                    params.tag_mode = tagMode
+                }
+
                 const [appsRes, tagsRes] = await Promise.all([
-                    getApplications(),
+                    getApplications(params),
                     getTags()
                 ])
-                setApplications(appsRes.data.data || appsRes.data)
+
+                setApplications(appsRes.data.data)
+                setCurrentPage(appsRes.data.current_page)
+                setLastPage(appsRes.data.last_page)
+                setTotal(appsRes.data.total)
                 setAllTags(tagsRes.data.tags || tagsRes.data)
             } catch (error) {
                 console.error("Errore:", error)
@@ -37,8 +55,23 @@ function Applications() {
                 setLoading(false)
             }
         }
-        fetchData()
-    }, []);
+        fetchApps()
+    }, [currentPage, filterStatus, filterTags, tagMode, perPage]);
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [perPage]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setCurrentPage(1)
+        }, 400)
+        return () => clearTimeout(timer)
+    }, [search]);
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [filterStatus, filterTags, tagMode])
 
     const toggleTag = (tag) => {
         const already = filterTags.find(t => t.id === tag.id)
@@ -49,18 +82,18 @@ function Applications() {
         }
     }
 
-    const filteredApps = applications.filter(app => {
-        const searchTerm  = search.toLowerCase()
-        const matchSearch = app.company.toLowerCase().includes(searchTerm) ||
-                            app.role.toLowerCase().includes(searchTerm)
-        const matchStatus = filterStatus === 'all' || app.status === filterStatus
-        const matchTag = filterTags.length === 0 || (
-            tagMode === 'OR'
-                ? filterTags.some(ft => app.tags?.some(t => t.id === ft.id))
-                : filterTags.every(ft => app.tags?.some(t => t.id === ft.id))
-        )
-        return matchSearch && matchStatus && matchTag
-    });
+    // const filteredApps = applications.filter(app => {
+    //     const searchTerm  = search.toLowerCase()
+    //     const matchSearch = app.company.toLowerCase().includes(searchTerm) ||
+    //                         app.role.toLowerCase().includes(searchTerm)
+    //     const matchStatus = filterStatus === 'all' || app.status === filterStatus
+    //     const matchTag = filterTags.length === 0 || (
+    //         tagMode === 'OR'
+    //             ? filterTags.some(ft => app.tags?.some(t => t.id === ft.id))
+    //             : filterTags.every(ft => app.tags?.some(t => t.id === ft.id))
+    //     )
+    //     return matchSearch && matchStatus && matchTag
+    // });
 
     if (loading) return <div className="loading">Caricamento candidature...</div>;
 
@@ -102,7 +135,17 @@ function Applications() {
                     )}
                 </button>
                 <div className="results-count">
-                    Trovate: <strong>{filteredApps.length}</strong>
+                    Trovate: <strong>{total}</strong>
+                </div>
+                {/* Scelta paginaazione */}
+                <div className="per-page-select">
+                    <select value={perPage} onChange={(e) => setPerPage(Number(e.target.value))}>
+                        <option value={5}>5 per pagina</option>
+                        <option value={10}>10 per pagina</option>
+                        <option value={15}>15 per pagina</option>
+                        <option value={25}>25 per pagina</option>
+                        <option value={50}>50 per pagina</option>
+                    </select>
                 </div>
             </div>
 
@@ -197,8 +240,8 @@ function Applications() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredApps.length > 0 ? (
-                            filteredApps.map(app => (
+                        {applications.length > 0 ? (
+                            applications.map(app => (
                                 <tr key={app.id} onClick={() => navigate(`/applications/${app.id}`)}>
                                     <td><strong>{app.company}</strong></td>
                                     <td>{app.role}</td>
@@ -256,6 +299,31 @@ function Applications() {
                         )}
                     </tbody>
                 </table>
+                {lastPage > 1 && (
+                    <div className="pagination-bar">
+                        <button
+                            className="page-btn"
+                            onClick={() => setCurrentPage(p => p - 1)}
+                            disabled={currentPage === 1}
+                        >←</button>
+
+                        {Array.from({ length: lastPage }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                className={`page-btn ${page === currentPage ? 'active' : ''}`}
+                                onClick={() => setCurrentPage(page)}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            className="page-btn"
+                            onClick={() => setCurrentPage(p => p + 1)}
+                            disabled={currentPage === lastPage}
+                        >→</button>
+                    </div>
+                )}
             </div>
         </div>
     );

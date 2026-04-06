@@ -13,17 +13,44 @@ class ApplicationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //Recuperiamo l'utente
         $user = \App\Models\User::find(Auth::id());
         //Recuperiamo le candidature e carichiamo anche i tag
-        $applications = $user->applications()->with('tags')->latest()->get();
+        $query = $user->applications()->with('tags')->latest();
 
-        return response()->json([
-            'success' => true,
-            'data' => $applications
-        ], 200);
+        //Filtro per stato
+        if($request->filled('status')){
+            $query->where('status', $request->status);
+        }
+
+        //Filtro per ricerca testuale
+        if($request->filled('search')){
+            $query->where(function($q) use ($request){
+                $q->where('company', 'like', '%' . $request->search . '%')
+                ->orWhere('role', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filtro per tag
+        if ($request->filled('tags')) {
+            $tagIds = explode(',', $request->tags);
+            $tagMode = $request->input('tag_mode', 'OR');
+
+            if ($tagMode === 'AND') {
+                foreach ($tagIds as $tagId) {
+                    $query->whereHas('tags', fn($q) => $q->where('tags.id', $tagId));
+                }
+            } else {
+                $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tagIds));
+            }
+        }
+
+        $perPage = $request->input('per_page', 15);
+        $applications = $query->paginate($perPage);
+
+        return response()->json($applications);
     }
 
     /**
