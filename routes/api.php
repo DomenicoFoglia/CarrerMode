@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
@@ -46,5 +47,7 @@ Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destro
 Route::put('/user/theme', [UserController::class, 'updateTheme'])->middleware('auth:sanctum');
 Route::put('/user/password', [UserController::class, 'updatePassword'])->middleware('auth:sanctum');
 
-
+//Chiamte Gemini
+Route::post('/ai/analyze-offer',       [AiController::class, 'analyzeOffer'])->middleware('auth:sanctum');
+Route::post('/ai/generate-cover-letter', [AiController::class, 'generateCoverLetter'])->middleware('auth:sanctum');
 
