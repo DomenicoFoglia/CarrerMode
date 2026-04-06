@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './ApplicationDetail.css';
 import { getApplication } from '../api/applications';
 import { deleteApplication } from '../api/applications';
+import { analyzeOffer, generateCoverLetter } from '../api/ai'
 
 function ApplicationDetail() {
     const { id } = useParams(); // Recupera l'ID dall'URL (es. /applications/5)
@@ -11,6 +12,13 @@ function ApplicationDetail() {
     const [application, setApplication] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    //AI
+    const [aiLoading, setAiLoading] = useState(false);
+    const [analysis, setAnalysis] = useState(null);
+    const [coverLetter, setCoverLetter] = useState(null);
+    const [aiPanel, setAiPanel] = useState(null);
+    const aiPanelRef = useRef(null);
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -41,6 +49,58 @@ function ApplicationDetail() {
         }
     };
 
+    const handleAnalyze = async () => {
+        if (!application.offer_text) {
+            alert('Questa candidatura non ha il testo dell\'offerta. Aggiungilo modificando la candidatura.')
+            return
+        }
+        setAiLoading(true);
+        setAiPanel('analysis');
+
+        setTimeout(() => {
+            aiPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 100);
+
+        try {
+            const res = await analyzeOffer(application.offer_text)
+            setAnalysis(res.data)
+        } catch (error) {
+            const msg = error.response?.data?.message || 'Errore nella chiamata AI.'
+            alert(msg)
+            setAiPanel(null)
+        } finally {
+            setAiLoading(false)
+        }
+    }
+
+    const handleCoverLetter = async () => {
+        if (!application.offer_text) {
+            alert('Questa candidatura non ha il testo dell\'offerta. Aggiungilo modificando la candidatura.')
+            return
+        }
+        setAiLoading(true);
+        setAiPanel('cover');
+
+        setTimeout(() => {
+            aiPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 50);
+
+        try {
+            const res = await generateCoverLetter({
+                offer_text: application.offer_text,
+                company: application.company,
+                role: application.role
+            })
+            setCoverLetter(res.data.cover_letter)
+        } catch (error) {
+            const msg = error.response?.data?.message || 'Errore nella chiamata AI.'
+            alert(msg)
+            setAiPanel(null)
+        } finally {
+            setAiLoading(false)
+        }
+    }
+
     if (loading) return <div className="loading">Caricamento candidature...</div>;
     if (error) return <div className="error-message">{error}</div>;
 
@@ -66,6 +126,12 @@ function ApplicationDetail() {
                     </button>
                     <button className="btn-delete" onClick={handleDelete}>
                         Elimina
+                    </button>
+                    <button className="btn-ai" onClick={handleAnalyze} disabled={aiLoading}>
+                        {aiLoading && aiPanel === 'analysis' ? 'Analisi...' : 'Analizza con AI'}
+                    </button>
+                    <button className="btn-ai" onClick={handleCoverLetter} disabled={aiLoading}>
+                        {aiLoading && aiPanel === 'cover' ? 'Generazione...' : 'Genera Cover Letter'}
                     </button>
                 </div>
             </div>
@@ -104,7 +170,7 @@ function ApplicationDetail() {
                     )}
                 </div>
 
-                {/* COLONNA DESTRA: Valutazioni */}
+                {/* Valutazioni */}
                 <div className="detail-card">
                     <h3>Valutazione & Match</h3>
                     <div className="rating-box">
@@ -125,7 +191,7 @@ function ApplicationDetail() {
                 </div>
             </div>
 
-            {/* SEZIONE FULL WIDTH: Testo Offerta */}
+            {/* Testo Offerta */}
             {application.offer_text && (
                 <div className="detail-card full-width">
                     <h3>Testo dell'Offerta</h3>
@@ -154,6 +220,70 @@ function ApplicationDetail() {
                     )}
                 </div>
             </div>
+
+            {/* PANNELLO AI */}
+            {aiPanel === 'analysis' && (
+                <div className="detail-card full-width ai-panel" ref={aiPanelRef}>
+                    <div className="ai-panel-header">
+                        <h3>Analisi AI</h3>
+                        <button className="ai-close" onClick={() => setAiPanel(null)}>×</button>
+                    </div>
+                    {aiLoading ? (
+                        <div className="ai-loading">Analisi in corso...</div>
+                    ) : analysis && (
+                        <div className="ai-content">
+                            <div className="ai-score">
+                                <span className="ai-score-label">Match Score</span>
+                                <span className="ai-score-value" style={{
+                                    color: analysis.match_score >= 70 ? '#3dba7e' : analysis.match_score >= 40 ? '#e8a44a' : '#e05a5a'
+                                }}>
+                                    {analysis.match_score}%
+                                </span>
+                            </div>
+                            <p className="ai-summary">{analysis.summary}</p>
+                            <div className="ai-columns">
+                                <div>
+                                    <h4 className="ai-section-title strengths">Punti di forza</h4>
+                                    <ul className="ai-list">
+                                        {analysis.strengths?.map((s, i) => <li key={i}>{s}</li>)}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="ai-section-title gaps">Lacune</h4>
+                                    <ul className="ai-list">
+                                        {analysis.gaps?.map((g, i) => <li key={i}>{g}</li>)}
+                                    </ul>
+                                </div>
+                            </div>
+                            <p className="ai-verdict">{analysis.verdict}</p>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {aiPanel === 'cover' && (
+                <div className="detail-card full-width ai-panel" ref={aiPanelRef}>
+                    <div className="ai-panel-header">
+                        <h3>Cover Letter generata</h3>
+                        <div style={{display: 'flex', gap: '8px'}}>
+                            <button className="btn-copy" onClick={() => {
+                                navigator.clipboard.writeText(coverLetter)
+                                alert('Copiata negli appunti!')
+                            }}>
+                                Copia
+                            </button>
+                            <button className="ai-close" onClick={() => setAiPanel(null)}>×</button>
+                        </div>
+                    </div>
+                    {aiLoading ? (
+                        <div className="ai-loading">Generazione in corso...</div>
+                    ) : coverLetter && (
+                        <div className="cover-letter-text">{coverLetter}</div>
+                    )}
+                </div>
+            )}
+
+            
         </div>
     );
 }
