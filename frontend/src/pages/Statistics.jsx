@@ -107,6 +107,38 @@ function Statistics() {
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
+                {/* Grafico tag più usati */}
+                {stats.top_tags && stats.top_tags.length > 0 && (
+                    <div className="chart-card" style={{marginTop: '16px'}}>
+                        <h3 className="chart-title">Tag più utilizzati</h3>
+                        <div className="top-tags-list">
+                            {stats.top_tags.map((tag, index) => {
+                                const maxCount = stats.top_tags[0].count
+                                const percentage = (tag.count / maxCount) * 100
+                                return (
+                                    <div key={index} className="top-tag-row">
+                                        <span
+                                            className="top-tag-name"
+                                            style={{ color: tag.color }}
+                                        >
+                                            {tag.name}
+                                        </span>
+                                        <div className="top-tag-bar-track">
+                                            <div
+                                                className="top-tag-bar-fill"
+                                                style={{
+                                                    width: `${percentage}%`,
+                                                    backgroundColor: tag.color
+                                                }}
+                                            />
+                                        </div>
+                                        <span className="top-tag-count">{tag.count}</span>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

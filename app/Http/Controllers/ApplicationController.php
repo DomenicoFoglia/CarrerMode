@@ -6,6 +6,7 @@ use App\Models\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ApplicationController extends Controller
 {
@@ -172,6 +173,17 @@ class ApplicationController extends Controller
         ->where('remind_at', '<=', now()->addDays(7))
         ->count();
 
+        // 5. Tag più usati
+        $topTags = DB::table('application_tag')
+            ->join('tags', 'application_tag.tag_id', '=', 'tags.id')
+            ->join('applications', 'application_tag.application_id', '=', 'applications.id')
+            ->where('applications.user_id', Auth::id())
+            ->select('tags.name', 'tags.color', \DB::raw('COUNT(*) as count'))
+            ->groupBy('tags.id', 'tags.name', 'tags.color')
+            ->orderByDesc('count')
+            ->limit(8)
+            ->get();
+
 
         $months = [
             1 => 'Gen', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mag', 6 => 'Giu',
@@ -190,6 +202,7 @@ class ApplicationController extends Controller
             ]),
             'this_month' => $thisMonth,
             'expiring_reminders' => $expiringReminders,
+            'top_tags'           => $topTags,
         ];
 
         return response()->json($stats);
