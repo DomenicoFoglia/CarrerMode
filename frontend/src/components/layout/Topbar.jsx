@@ -4,7 +4,7 @@ import useAuthStore from '../../store/authStore'
 import {useNavigate, NavLink} from 'react-router-dom'
 
 
-function Topbar(){
+function Topbar({ onMenuToggle }){
     const logout = useAuthStore((state) => state.logout);
     const user = useAuthStore((state) => state.user)
     const navigate = useNavigate();
@@ -22,6 +22,12 @@ function Topbar(){
 
     return(
         <header className="topbar">
+            <button className='hamburger' onClick={onMenuToggle}>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <div className="topbar-logo">CarrerMode</div>
 
             <nav className="topbar-nav">

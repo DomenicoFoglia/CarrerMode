@@ -412,3 +412,143 @@
     opacity: 0.3;
     cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+    .applications-container {
+        padding: 16px;
+    }
+
+    .apps-header {
+        margin-bottom: 16px;
+    }
+
+    .apps-header h1 {
+        font-size: 18px;
+    }
+
+    .btn-add {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    /* Filtri in colonna */
+    .filters-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .status-filters select,
+    .per-page-select select {
+        width: 100%;
+    }
+
+    .status-filters,
+    .per-page-select {
+        flex: 1;
+    }
+
+    /* Tabella come card */
+    .apps-table-container {
+        border-radius: 8px;
+    }
+
+    .apps-table thead {
+        display: none;
+    }
+
+    .apps-table,
+    .apps-table tbody,
+    .apps-table tr,
+    .apps-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .apps-table tr {
+        border-bottom: 1px solid var(--border-color);
+        padding: 12px 16px;
+    }
+
+    .apps-table tr:last-child {
+        border-bottom: none;
+    }
+
+    .apps-table td {
+        padding: 2px 0;
+        border: none;
+        font-size: 13px;
+    }
+
+    /* Azienda in evidenza */
+    .apps-table td:nth-child(1) strong {
+        font-size: 15px;
+    }
+
+    /* Ruolo */
+    .apps-table td:nth-child(2) {
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    /* Data — nascondiamo */
+    .apps-table td:nth-child(3) {
+        display: none;
+    }
+
+    /* Stato */
+    .apps-table td:nth-child(4) {
+        margin-top: 6px;
+    }
+
+    /* Tag — nascondiamo */
+    .apps-table td:nth-child(5) {
+        display: none;
+    }
+
+    /* Azioni */
+    .apps-table td:nth-child(6) {
+        margin-top: 8px;
+    }
+
+    .actions-cell {
+        gap: 6px;
+    }
+
+    /* Pannello tag */
+    .tag-panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .tag-mode-toggle {
+        width: 100%;
+    }
+
+    .toggle-group {
+        flex: 1;
+        justify-content: center;
+    }
+
+    /* Paginazione */
+    .pagination-bar {
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 12px;
+    }
+
+    .page-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 32px;
+    }
+}

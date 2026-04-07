@@ -21,8 +21,29 @@
     padding: 20px;
 }
 
+.sidebar-overlay {
+    display: none;
+}
+
 .content {
     background-color: var(--bg-primary);
-    padding: 20px;
+    /* padding: 20px; */
     overflow-y: auto;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .app-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px 1fr;
+    }
+
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+        top: 60px;
+    }
 }

@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router
 import { useEffect, useState } from 'react'
 import { getStats } from '../../api/applications'
 
-function Sidebar() {
+function Sidebar({ isOpen, onClose }) {
     const [searchParams] = useSearchParams();
     const currentStatus = searchParams.get('status') || 'all';
     const location = useLocation()
@@ -18,7 +18,9 @@ function Sidebar() {
     const isDashboard = location.pathname === '/'
 
     return (
-        <div className="sidebar">
+        <div className={`sidebar ${isOpen ? 'sidebar-mobile-open' : ''}`}>
+
+            <button className="sidebar-close" onClick={onClose}>×</button>
 
             {/* SIDEBAR DASHBOARD */}
             {isDashboard && (
@@ -82,6 +84,9 @@ function Sidebar() {
             {/* STRUMENTI, sempre visibili */}
             <div className="sidebar-label" style={{marginTop: '20px'}}>Strumenti</div>
             <div className="sidebar-link cursor" onClick={() => navigate('/applications/new')}>+ Nuova candidatura</div>
+            {!isDashboard && <NavLink to="/" end className="sidebar-link">Dashboard</NavLink>}
+            {/* se non siamo nell'area candidature E non siamo nella dashboard, mostra il link candidature*/}
+            {(!isApplicationsArea && !isDashboard) && <NavLink to="/applications" className="sidebar-link">Tutte le candidature</NavLink>}
             <NavLink to="/statistics" className="sidebar-link">Statistiche</NavLink>
             <NavLink to="/reminders" className="sidebar-link">Reminder</NavLink>
             <NavLink to="/settings" className="sidebar-link">Opzioni</NavLink>

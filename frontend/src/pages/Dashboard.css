@@ -381,3 +381,117 @@
     width: 20px;
     text-align: right;
 }
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-card h3 {
+        font-size: 10px;
+    }
+
+    .stat-card .number {
+        font-size: 22px;
+        margin-top: 6px;
+    }
+
+    .card-subtitle {
+        font-size: 10px;
+    }
+
+    .dashboard-main-content {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .recent-applications {
+        order: 1;
+        padding: 12px;
+    }
+
+    .dashboard-reminders {
+        order: 2;
+        margin-top: 0;
+    }
+
+    .dashboard-status-chart {
+        order: 3;
+        margin-top: 0;
+    }
+
+    .recent-applications .apps-table thead {
+        display: none;
+    }
+
+    .recent-applications .apps-table,
+    .recent-applications .apps-table tbody,
+    .recent-applications .apps-table tr,
+    .recent-applications .apps-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .recent-applications .apps-table tr {
+        background: transparent;
+        border-radius: 0;
+        margin-bottom: 0;
+        padding: 12px 0;
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .recent-applications .apps-table tr:last-child {
+        border-bottom: none;
+    }
+
+    .recent-applications .apps-table td {
+        padding: 2px 0;
+        border: none;
+        font-size: 13px;
+    }
+
+    .recent-applications .apps-table td:nth-child(1) {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-primary);
+    }
+
+    .recent-applications .apps-table td:nth-child(2) {
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    .recent-applications .apps-table td:nth-child(3) {
+        display: none;
+    }
+
+    .recent-applications .apps-table td:nth-child(4) {
+        margin-top: 6px;
+    }
+
+    .recent-applications .apps-table td:nth-child(5) {
+        display: none;
+    }
+
+    .status-badge {
+        padding: 3px 8px;
+        font-size: 11px;
+    }
+}
+/* @media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+} */
