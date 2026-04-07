@@ -371,3 +371,68 @@
     background: var(--accent);
     color: white;
 }
+
+@media (max-width: 768px) {
+    .detail-container {
+        padding: 12px;
+    }
+
+    .detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .header-info h1 {
+        font-size: 18px;
+    }
+
+    .detail-container .header-actions {
+        margin-left: 0;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .detail-container .btn-edit,
+    .btn-delete,
+    .btn-ai {
+        padding: 8px 12px;
+        font-size: 12px;
+        flex: 1;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .info-item {
+        padding: 10px 0;
+    }
+
+    .value {
+        font-size: 13px;
+    }
+
+    .rating-item {
+        font-size: 28px;
+    }
+
+    .offer-text-content {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    .ai-columns {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .ai-score-value {
+        font-size: 28px;
+    }
+}

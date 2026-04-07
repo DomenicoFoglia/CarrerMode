@@ -149,3 +149,67 @@
 .row-expanded td {
     color: var(--accent) !important;
 }
+
+@media (max-width: 768px) {
+    .reminder-form-card {
+        padding: 14px;
+        margin-bottom: 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .flex-1, .flex-2, .flex-3 {
+        flex: none;
+        width: 100%;
+    }
+
+    .checkbox-container {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .apps-table thead {
+        display: none;
+    }
+
+    .apps-table,
+    .apps-table tbody,
+    .apps-table tr,
+    .apps-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .apps-table tr {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .apps-table tr:last-child {
+        border-bottom: none;
+    }
+
+    .apps-table td {
+        padding: 2px 0;
+        border: none;
+        font-size: 13px;
+    }
+
+    .apps-table td:nth-child(3),
+    .apps-table td:nth-child(4) {
+        display: none;
+    }
+
+    .action-cell {
+        justify-content: flex-start;
+        margin-top: 8px;
+    }
+
+    .notes-accordion-row td {
+        padding: 12px 16px !important;
+    }
+}

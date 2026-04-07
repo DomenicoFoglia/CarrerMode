@@ -121,3 +121,35 @@
     text-align: right;
     flex-shrink: 0;
 }
+
+@media (max-width: 768px) {
+    .stats-page {
+        padding: 16px;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-card .number {
+        font-size: 22px;
+    }
+
+    .chart-card {
+        padding: 14px;
+    }
+
+    .top-tag-name {
+        width: 70px;
+        font-size: 11px;
+    }
+}
