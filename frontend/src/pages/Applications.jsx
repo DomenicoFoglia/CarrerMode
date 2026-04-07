@@ -22,11 +22,28 @@ function Applications() {
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
     const [total, setTotal] = useState(0);
+    const [fetchTrigger, setFetchTrigger] = useState(0);
 
     useEffect(() => {
         setFilterStatus(searchParams.get('status') || 'all')
     }, [searchParams])
 
+    // Debounce su ricerca e tag
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setCurrentPage(1)
+            setFetchTrigger(t => t + 1)
+        }, 1300)
+        return () => clearTimeout(timer)
+    }, [search, filterTags, tagMode])
+
+    // Reset immediato su cambio stato e perPage
+    useEffect(() => {
+        setCurrentPage(1)
+        setFetchTrigger(t => t + 1)
+    }, [filterStatus, perPage])
+
+    // UseEffect principale
     useEffect(() => {
         const fetchApps = async () => {
             setLoading(true)
@@ -56,22 +73,7 @@ function Applications() {
             }
         }
         fetchApps()
-    }, [currentPage, filterStatus, filterTags, tagMode, perPage]);
-
-    useEffect(() => {
-        setCurrentPage(1)
-    }, [perPage]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setCurrentPage(1)
-        }, 400)
-        return () => clearTimeout(timer)
-    }, [search]);
-
-    useEffect(() => {
-        setCurrentPage(1)
-    }, [filterStatus, filterTags, tagMode])
+    }, [currentPage, fetchTrigger])
 
     const toggleTag = (tag) => {
         const already = filterTags.find(t => t.id === tag.id)
@@ -81,19 +83,6 @@ function Applications() {
             setFilterTags([...filterTags, tag])
         }
     }
-
-    // const filteredApps = applications.filter(app => {
-    //     const searchTerm  = search.toLowerCase()
-    //     const matchSearch = app.company.toLowerCase().includes(searchTerm) ||
-    //                         app.role.toLowerCase().includes(searchTerm)
-    //     const matchStatus = filterStatus === 'all' || app.status === filterStatus
-    //     const matchTag = filterTags.length === 0 || (
-    //         tagMode === 'OR'
-    //             ? filterTags.some(ft => app.tags?.some(t => t.id === ft.id))
-    //             : filterTags.every(ft => app.tags?.some(t => t.id === ft.id))
-    //     )
-    //     return matchSearch && matchStatus && matchTag
-    // });
 
     if (loading) return <div className="loading">Caricamento candidature...</div>;
 
@@ -137,7 +126,6 @@ function Applications() {
                 <div className="results-count">
                     Trovate: <strong>{total}</strong>
                 </div>
-                {/* Scelta paginaazione */}
                 <div className="per-page-select">
                     <select value={perPage} onChange={(e) => setPerPage(Number(e.target.value))}>
                         <option value={5}>5 per pagina</option>
@@ -149,7 +137,6 @@ function Applications() {
                 </div>
             </div>
 
-            {/* Pannello tag */}
             {tagPanelOpen && (
                 <div className="tag-panel">
                     <div className="tag-panel-header">
