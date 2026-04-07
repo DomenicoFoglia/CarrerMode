@@ -139,6 +139,50 @@ function Statistics() {
                         </div>
                     </div>
                 )}
+
+                {/* Grafico tipo di contratto */}
+                {stats.contract_types && stats.contract_types.length > 0 && (
+                    <div className="chart-card" style={{marginTop: '16px'}}>
+                        <h3 className="chart-title">Distribuzione per tipo di contratto</h3>
+                        <ResponsiveContainer width="100%" height={260}>
+                            <BarChart
+                                data={stats.contract_types}
+                                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#2a3044" />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#8a90a0', fontSize: 11 }}
+                                />
+                                <YAxis
+                                    allowDecimals={false}
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#8a90a0', fontSize: 12 }}
+                                />
+                                <Tooltip
+                                    contentStyle={{
+                                        background: '#1a1f2e',
+                                        border: '1px solid #2a3044',
+                                        borderRadius: '6px',
+                                        color: '#c8cdd8'
+                                    }}
+                                    cursor={{ fill: 'rgba(74, 158, 255, 0.05)' }}
+                                />
+                                <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={40}>
+                                    {stats.contract_types.map((entry, index) => (
+                                        <Cell
+                                            key={index}
+                                            fill={['#4a9eff', '#3dba7e', '#e8a44a', '#e05a5a', '#9b7de8'][index % 5]}
+                                        />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                )}
             </div>
         </div>
     )

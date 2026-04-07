@@ -211,6 +211,19 @@ class ApplicationController extends Controller
             ->limit(8)
             ->get();
 
+        
+        // 6. Distribuzione per tipo di contratto
+        $contractTypes = $user->applications()
+            ->whereNotNull('contract_type')
+            ->where('contract_type', '!=', '')
+            ->selectRaw('contract_type, COUNT(*) as count')
+            ->groupBy('contract_type')
+            ->orderByDesc('count')
+            ->get()
+            ->map(fn($item) => [
+                'name'  => $item->contract_type,
+                'count' => $item->count
+            ]);
 
         $months = [
             1 => 'Gen', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mag', 6 => 'Giu',
@@ -230,6 +243,7 @@ class ApplicationController extends Controller
             'this_month' => $thisMonth,
             'expiring_reminders' => $expiringReminders,
             'top_tags'           => $topTags,
+            'contract_types' => $contractTypes,
         ];
 
         return response()->json($stats);
