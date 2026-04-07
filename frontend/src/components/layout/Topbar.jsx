@@ -28,7 +28,10 @@ function Topbar({ onMenuToggle }){
                 <span></span>
             </button>
 
-            <div className="topbar-logo">CarrerMode</div>
+            <div className="topbar-logo">
+                <span style={{color: 'var(--text-primary)'}}>Career</span>
+                <span style={{color: 'var(--accent)'}}>Mode</span>
+            </div>
 
             <nav className="topbar-nav">
                 <NavLink to="/" end className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Dashboard</NavLink>

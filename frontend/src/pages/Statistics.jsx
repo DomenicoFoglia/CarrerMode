@@ -155,6 +155,10 @@ function Statistics() {
                                     axisLine={false}
                                     tickLine={false}
                                     tick={{ fill: '#8a90a0', fontSize: 11 }}
+                                    angle={-35}
+                                    textAnchor="end"
+                                    height={60}
+                                    interval={0}
                                 />
                                 <YAxis
                                     allowDecimals={false}
