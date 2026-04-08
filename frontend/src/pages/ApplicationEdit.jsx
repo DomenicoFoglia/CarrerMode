@@ -5,6 +5,7 @@ import { getApplication, updateApplication } from '../api/applications';
 import { getTags, createTag } from '../api/tags';
 import { uploadAttachment } from '../api/attachments';
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 function ApplicationEdit(){
     const navigate = useNavigate();
@@ -97,7 +98,7 @@ function ApplicationEdit(){
                 // Se fallisce solo il file, avvisiamo l'utente ma non blocchiamo tutto
                 const fileMsg = fileError.response?.data?.errors?.file?.[0] 
                     || t('common.error');
-                alert(`${t('application_form.update')}: ${fileMsg}`);
+                toast.error(`${t('application_form.update')}: ${fileMsg}`);
                 return; // Usciamo per non navigare via, così l'utente può riprovare il file
             }
 
@@ -107,7 +108,7 @@ function ApplicationEdit(){
                 ? Object.values(error.response.data.errors).flat().join("\n")
                 : t('common.error');
                 
-            alert(errorMsg);
+            toast.error(errorMsg);
         }finally{
             setLoading(false);
         }
@@ -253,7 +254,7 @@ function ApplicationEdit(){
                                         setSelectedTags(prev => [...prev, created.id])
                                         setNewTagName('')
                                     } catch {
-                                        alert(t('common.error'))
+                                        toast.error(t('common.error'))
                                     }
                                 }
                             }}

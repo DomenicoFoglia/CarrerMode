@@ -4,6 +4,7 @@ import useAuthStore from '../store/authStore'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import './Settings.css'
+import toast from 'react-hot-toast'
 
 
 function Settings(){
@@ -51,7 +52,7 @@ function Settings(){
         
         try{
             await updatePassword(passwordData);
-            alert(t('settings.password_success'));
+            toast.success(t('settings.password_success'));
             setPasswordData({
                 current_password: '',
                 password: '',
@@ -59,7 +60,7 @@ function Settings(){
             });
         }catch (error){
             const msg = error.response?.data?.message || t('common.error'); //Il messaaggio di errore ce lo manda LAravel
-            alert(msg);
+            toast.error(msg);
         }finally{
             setLoading(false);
         }

@@ -4,6 +4,8 @@ import './Applications.css';
 import { getReminders, createReminder, updateReminder, deleteReminder } from '../api/reminders';
 import { getApplications } from '../api/applications';
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
+import ConfirmModal from '../components/ConfirmModal'
 
 function Reminders() {
     const { t } = useTranslation();
@@ -11,6 +13,8 @@ function Reminders() {
     const [applications, setApplications] = useState([]);
     const [expandedId, setExpandedId] = useState(null); // Stato per l'accordion
     const [loading, setLoading] = useState(true);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [reminderToDelete, setReminderToDelete] = useState(null);
 
     const [formData, setFormData] = useState({
         id: null,
@@ -60,21 +64,27 @@ function Reminders() {
             await fetchData(); // Ricarichiamo i dati aggiornati
         } catch (error) {
             console.error("Errore nel salvataggio:", error);
-            alert(t('common.error'));
+            toast.error(t('common.error'));
         }
     };
 
-    const handleDelete = async (id) => {
-        if (window.confirm(t('reminders.confirm_delete'))) {
-            try {
-                await deleteReminder(id);
-                setReminders(reminders.filter(r => r.id !== id));
-                if (expandedId === id) setExpandedId(null);
-            } catch (error) {
-                alert(t('common.error',error));
-            }
+    const handleDelete = (id) => {
+        setReminderToDelete(id);
+        setConfirmOpen(true);
+    }
+
+    const handleDeleteConfirmed = async () => {
+        setConfirmOpen(false)
+        try {
+            await deleteReminder(reminderToDelete)
+            setReminders(reminders.filter(r => r.id !== reminderToDelete))
+            if (expandedId === reminderToDelete) setExpandedId(null)
+        } catch (error) {
+            toast.error(t('common.error'))
+        } finally {
+            setReminderToDelete(null)
         }
-    };
+    }
 
     const handleEdit = (reminder) => {
         setFormData({
@@ -226,6 +236,14 @@ function Reminders() {
                     <p>{t('reminders.empty')}</p>
                 </div>
             )}
+
+            <ConfirmModal
+                isOpen={confirmOpen}
+                message={t('reminders.confirm_delete')}
+                onConfirm={handleDeleteConfirmed}
+                onCancel={() => { setConfirmOpen(false); setReminderToDelete(null) }}
+            />
+
         </div>
     );
 }

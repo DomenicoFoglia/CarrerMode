@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import Topbar from './Topbar'
 import Sidebar from './Sidebar'
 import { useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 
 function AppShell() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -41,6 +42,31 @@ function AppShell() {
                 </a>
             </div>
         </footer>
+
+        <Toaster
+            position="bottom-right"
+            toastOptions={{
+                duration: 4000,
+                style: {
+                    background: 'var(--bg-secondary)',
+                    color: 'var(--text-primary)',
+                    border: '1px solid var(--border-color)',
+                    fontSize: '14px',
+                },
+                success: {
+                    iconTheme: {
+                        primary: '#3dba7e',
+                        secondary: 'var(--bg-secondary)',
+                    },
+                },
+                error: {
+                    iconTheme: {
+                        primary: '#e05a5a',
+                        secondary: 'var(--bg-secondary)',
+                    },
+                },
+            }}
+        />
     </div>
     )
 }

@@ -3,12 +3,15 @@ import { useEffect, useState, useRef } from 'react';
 import './ApplicationDetail.css';
 import { getApplication, deleteApplication  } from '../api/applications';
 import { analyzeOffer, generateCoverLetter } from '../api/ai'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast'
+import ConfirmModal from '../components/ConfirmModal'
 
 function ApplicationDetail() {
     const { id } = useParams(); 
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
     const [application, setApplication] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -37,20 +40,24 @@ function ApplicationDetail() {
     }, [id]); //Se cambia l'ID riesegue useEffect
 
     const handleDelete = async () => {
-        if (window.confirm(t('application_detail.confirm_delete'))) {
-            try {
-                await deleteApplication(id);
-                navigate('/applications'); // Torna alla lista dopo l'eliminazione
-            } catch (err) {
-                alert(t('application_detail.delete_error'));
-                console.error(err);
-            }
+        setConfirmOpen(true)
+    }
+
+    const handleDeleteConfirmed = async () => {
+        setConfirmOpen(false);
+        
+        try {
+            await deleteApplication(id);
+            navigate('/applications'); // Torna alla lista dopo l'eliminazione
+        } catch (err) {
+            toast.error(t('application_detail.delete_error'));
+            console.error(err);
         }
     };
 
     const handleAnalyze = async () => {
         if (!application.offer_text) {
-            alert(t('application_detail.no_offer_text'))
+            toast(t('application_detail.no_offer_text'), { icon: 'ℹ️' });
             return
         }
         setAiLoading(true);
@@ -64,7 +71,7 @@ function ApplicationDetail() {
             const res = await analyzeOffer(application.offer_text);
             setAnalysis(res.data);
         } catch (error) {
-            alert(error.response?.data?.message || t('common.error'));
+            toast.error(error.response?.data?.message || t('common.error'));
             setAiPanel(null);
         } finally {
             setAiLoading(false);
@@ -73,7 +80,7 @@ function ApplicationDetail() {
 
     const handleCoverLetter = async () => {
         if (!application.offer_text) {
-            alert(t('application_detail.no_offer_text'));
+            toast(t('application_detail.no_offer_text'), { icon: 'ℹ️' });
             return
         }
         setAiLoading(true);
@@ -91,7 +98,7 @@ function ApplicationDetail() {
             })
             setCoverLetter(res.data.cover_letter)
         } catch (error) {
-            alert(error.response?.data?.message || t('common.error'));
+            toast.error(error.response?.data?.message || t('common.error'));
             setAiPanel(null);
         } finally {
             setAiLoading(false);
@@ -266,7 +273,7 @@ function ApplicationDetail() {
                         <div style={{display: 'flex', gap: '8px'}}>
                             <button className="btn-copy" onClick={() => {
                                 navigator.clipboard.writeText(coverLetter)
-                                alert(t('application_detail.ai_copied'))
+                                toast.success(t('application_detail.ai_copied'))
                             }}>
                                 {t('application_detail.ai_copy')}
                             </button>
@@ -281,6 +288,12 @@ function ApplicationDetail() {
                 </div>
             )}
 
+            <ConfirmModal
+                isOpen={confirmOpen}
+                message={t('application_detail.confirm_delete')}
+                onConfirm={handleDeleteConfirmed}
+                onCancel={() => setConfirmOpen(false)}
+            />
             
         </div>
     );

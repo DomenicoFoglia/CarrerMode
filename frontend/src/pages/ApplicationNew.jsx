@@ -5,6 +5,7 @@ import { getTags, createTag } from '../api/tags';
 import './ApplicationNew.css';
 import { uploadAttachment } from '../api/attachments';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast'
 
 
 function ApplicationNew() {
@@ -87,7 +88,7 @@ function ApplicationNew() {
                 ? Object.values(error.response.data.errors).flat().join("\n")
                 : t('common.error');
                 
-            alert(errorMsg);
+            toast.error(errorMsg)
         }finally{
             setLoading(false);
         }
@@ -231,7 +232,7 @@ function ApplicationNew() {
                                         setSelectedTags(prev => [...prev, created.id])
                                         setNewTagName('')
                                     } catch {
-                                        alert(t('common.error'))
+                                        toast.error(t('common.error'))
                                     }
                                 }
                             }}
