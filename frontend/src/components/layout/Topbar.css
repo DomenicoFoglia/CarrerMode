@@ -106,3 +106,18 @@
         font-size: 1.1rem;
     }
 }
+
+.topbar-user-section .lang-switcher {
+    position: static;
+    background: var(--accent-muted);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.topbar-user-section .lang-switcher:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-muted);
+}

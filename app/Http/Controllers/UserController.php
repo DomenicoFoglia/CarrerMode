@@ -30,7 +30,7 @@ class UserController extends Controller
         //Avremmo potuto usare anche la pipeline | ma con l'array possiamo mescolare piu facilmente stringhe e oggetti
         $validated = $request->validate([
             'current_password' => ['required', 'string'],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', Password::min(12)->mixedCase()->numbers()->symbols()],
         ]);
 
         if(!Hash::check($validated['current_password'], $user->password)){

@@ -281,3 +281,9 @@
 .auth-creator-links a:hover {
     color: #4a9eff;
 }
+
+.auth-hint {
+    font-size: 11px;
+    color: rgba(138, 144, 160, 0.5);
+    margin-top: 2px;
+}

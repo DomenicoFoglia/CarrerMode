@@ -2,12 +2,15 @@ import './Topbar.css'
 import api from '../../api/axios'
 import useAuthStore from '../../store/authStore'
 import {useNavigate, NavLink} from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from '../LanguageSwitcher'
 
 
 function Topbar({ onMenuToggle }){
     const logout = useAuthStore((state) => state.logout);
-    const user = useAuthStore((state) => state.user)
+    const user = useAuthStore((state) => state.user);
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         try {
@@ -34,19 +37,17 @@ function Topbar({ onMenuToggle }){
             </div>
 
             <nav className="topbar-nav">
-                <NavLink to="/" end className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Dashboard</NavLink>
-                <NavLink to="/applications" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Candidature</NavLink>
-                <NavLink to="/statistics" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Statistiche</NavLink>
-                <NavLink to="/reminders" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>Promemoria</NavLink>
+                <NavLink to="/" end className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>{t('nav.dashboard')}</NavLink>
+                <NavLink to="/applications" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>{t('nav.applications')}</NavLink>
+                <NavLink to="/statistics" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>{t('nav.statistics')}</NavLink>
+                <NavLink to="/reminders" className={({isActive}) => isActive ? 'topbar-link active' : 'topbar-link'}>{t('nav.reminders')}</NavLink>
             </nav>
 
             <div className="topbar-user-section">
+                <LanguageSwitcher />
                 <span>{user?.name}</span>
-                <button 
-                    onClick={handleLogout} 
-                    className="logout-link"
-                >
-                    Esci
+                <button onClick={handleLogout} className="logout-link">
+                    {t('nav.logout')}
                 </button>
             </div>
             

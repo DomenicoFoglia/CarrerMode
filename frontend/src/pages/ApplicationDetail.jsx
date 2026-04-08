@@ -6,7 +6,7 @@ import { deleteApplication } from '../api/applications';
 import { analyzeOffer, generateCoverLetter } from '../api/ai'
 
 function ApplicationDetail() {
-    const { id } = useParams(); // Recupera l'ID dall'URL (es. /applications/5)
+    const { id } = useParams(); 
     const navigate = useNavigate();
 
     const [application, setApplication] = useState(null);
