@@ -1,10 +1,13 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { updateTheme, updatePassword } from '../api/user'
 import useAuthStore from '../store/authStore'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from '../components/LanguageSwitcher'
 import './Settings.css'
 
 
 function Settings(){
+    const { t } = useTranslation();
     //recuperiamo l'utente
     const {user, setUser} = useAuthStore();
 
@@ -48,14 +51,14 @@ function Settings(){
         
         try{
             await updatePassword(passwordData);
-            alert('Password aggiornata con successo!');
+            alert(t('settings.password_success'));
             setPasswordData({
                 current_password: '',
                 password: '',
                 password_confirmation: ''
             });
         }catch (error){
-            const msg = error.response?.data?.message || 'Errore imprevisto'; //Il messaaggio di errore ce lo manda LAravel
+            const msg = error.response?.data?.message || t('common.error'); //Il messaaggio di errore ce lo manda LAravel
             alert(msg);
         }finally{
             setLoading(false);
@@ -64,67 +67,69 @@ function Settings(){
 
     return (
         <div className="settings-page">
-            <h1 className="settings-title">Impostazioni</h1>
+            <h1 className="settings-title">{t('settings.title')}</h1>
+
+            {/* TEMA */}
             <section className="settings-section">
-                <h3>Tema Applicazione</h3>
+                <h3>{t('settings.theme_title')}</h3>
                 <div className="theme-grid">
-                    {themes.map((t) => (
-                        <div 
-                            key={t.id} 
-                            className={`theme-card ${user?.theme === t.id ? 'active' : ''}`}
-                            onClick={() => handleThemeChange(t.id)}
+                    {themes.map((theme) => (
+                        <div
+                            key={theme.id}
+                            className={`theme-card ${user?.theme === theme.id ? 'active' : ''}`}
+                            onClick={() => handleThemeChange(theme.id)}
                         >
-                            <div className="theme-preview" style={{ backgroundColor: t.color }}></div>
-                            <span>{t.name}</span>
+                            <div className="theme-preview" style={{ backgroundColor: theme.color }}></div>
+                            <span>{theme.name}</span>
                         </div>
                     ))}
                 </div>
             </section>
 
-            {/* SEZIONE 2: CAMBIO PASSWORD */}
+            {/* LINGUA */}
             <section className="settings-section">
-                <h3>Sicurezza Account</h3>
+                <h3>{t('settings.language_title')}</h3>
+                <LanguageSwitcher />
+            </section>
+
+            {/* PASSWORD */}
+            <section className="settings-section">
+                <h3>{t('settings.password_title')}</h3>
                 <form onSubmit={handlePasswordSubmit} className="password-form">
                     <div className="form-group">
-                        <label>Password attuale</label>
-                        <input 
-                            type="password" 
+                        <label>{t('settings.current_password')}</label>
+                        <input
+                            type="password"
                             value={passwordData.current_password}
-                            onChange={e => setPasswordData({...passwordData, current_password: e.target.value})}
-                            required 
+                            onChange={e => setPasswordData({ ...passwordData, current_password: e.target.value })}
+                            required
                         />
                     </div>
-                    
                     <div className="form-group">
-                        <label>Nuova password</label>
-                        <input 
-                            type="password" 
+                        <label>{t('settings.new_password')}</label>
+                        <input
+                            type="password"
                             value={passwordData.password}
-                            onChange={e => setPasswordData({...passwordData, password: e.target.value})}
-                            required 
+                            onChange={e => setPasswordData({ ...passwordData, password: e.target.value })}
+                            required
                         />
                     </div>
-
                     <div className="form-group">
-                        <label>Conferma password</label>
-                        <input 
-                            type="password" 
+                        <label>{t('settings.confirm_password')}</label>
+                        <input
+                            type="password"
                             value={passwordData.password_confirmation}
-                            onChange={e => setPasswordData({...passwordData, password_confirmation: e.target.value})}
-                            required 
+                            onChange={e => setPasswordData({ ...passwordData, password_confirmation: e.target.value })}
+                            required
                         />
                     </div>
-                    
                     <button type="submit" className="btn-save" disabled={loading}>
-                        {loading ? 'Aggiornamento...' : 'Aggiorna Password'}
+                        {loading ? t('settings.saving') : t('settings.save_password')}
                     </button>
                 </form>
             </section>
         </div>
-    )
-
-
-
+    );
 }
 
 export default Settings

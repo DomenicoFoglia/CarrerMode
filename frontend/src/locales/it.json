@@ -137,7 +137,14 @@
         "updating": "Aggiornamento...",
         "new_tag_placeholder": "Nuovo tag...",
         "cv_label": "CV",
-        "cover_label": "Cover Letter"
+        "cover_label": "Cover Letter",
+        "step4_tags": "Tag",
+        "tag_hint": "Premi Invio per creare",
+        "location_placeholder": "Milano, Remote...",
+        "contract_placeholder": "Indeterminato, Part-time...",
+        "salary_placeholder": "es: 30k-35k",
+        "offer_text_placeholder": "Incolla qui il testo dell'annuncio...",
+        "notes_placeholder": "Le tue note personali..."
     },
     "dashboard": {
         "title": "Dashboard",
@@ -186,7 +193,8 @@
         "delete": "Elimina",
         "edit": "Modifica",
         "empty": "Nessun promemoria trovato.",
-        "overdue": "Scaduto"
+        "overdue": "Scaduto",
+        "confirm_delete": "Sei sicuro di voler eliminare questo promemoria?"
     },
     "settings": {
         "title": "Impostazioni",
@@ -211,6 +219,7 @@
         "delete": "Elimina",
         "edit": "Modifica",
         "close": "Chiudi",
-        "built_with": "Built with Laravel & React"
+        "built_with": "Built with Laravel & React",
+        "select": "Seleziona..."
     }
 }

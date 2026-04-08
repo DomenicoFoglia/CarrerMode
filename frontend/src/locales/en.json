@@ -134,7 +134,15 @@
         "save": "Save Application",
         "saving": "Saving...",
         "update": "Update Application",
-        "updating": "Updating..."
+        "updating": "Updating...",
+        "step4_tags": "Tags",
+        "tag_hint": "Press Enter to create",
+        "new_tag_placeholder": "New tag...",
+        "location_placeholder": "Milan, Remote...",
+        "contract_placeholder": "Permanent, Part-time...",
+        "salary_placeholder": "e.g. 30k-35k",
+        "offer_text_placeholder": "Paste the job offer text here...",
+        "notes_placeholder": "Your personal notes..."
     },
     "dashboard": {
         "title": "Dashboard",
@@ -183,7 +191,8 @@
         "delete": "Delete",
         "edit": "Edit",
         "empty": "No reminders found.",
-        "overdue": "Overdue"
+        "overdue": "Overdue",
+        "confirm_delete": "Are you sure you want to delete this reminder?"
     },
     "settings": {
         "title": "Settings",
@@ -208,6 +217,7 @@
         "delete": "Delete",
         "edit": "Edit",
         "close": "Close",
-        "built_with": "Built with Laravel & React"
+        "built_with": "Built with Laravel & React",
+        "select": "Select..."
     }
 }

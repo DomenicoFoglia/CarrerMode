@@ -1,15 +1,16 @@
 import './ApplicationEdit.css'
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getApplication } from '../api/applications';
+import { getApplication, updateApplication } from '../api/applications';
 import { getTags, createTag } from '../api/tags';
 import { uploadAttachment } from '../api/attachments';
-import { updateApplication } from '../api/applications';
+import { useTranslation } from 'react-i18next'
 
 function ApplicationEdit(){
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const { t } = useTranslation();
 
     const { id } = useParams();
     // const [application, setApplication] = useState(null);
@@ -65,11 +66,9 @@ function ApplicationEdit(){
 
                 //Preselezioniamo i tag gia' associati
                 setSelectedTags(app.tags.map(t => t.id))
-
-                console.log("Candidataura ricevuta dal server:", appRes.data)
             }catch(error){
                 console.error("Errore:", error);
-                setError("Candidatura non trovata o errore del server.");
+                setError(t('common.error'));
             }finally{
                 setLoading(false);
             }
@@ -97,8 +96,8 @@ function ApplicationEdit(){
             } catch (fileError) {
                 // Se fallisce solo il file, avvisiamo l'utente ma non blocchiamo tutto
                 const fileMsg = fileError.response?.data?.errors?.file?.[0] 
-                    || "Il file selezionato è troppo grande o non valido.";
-                alert(`Candidatura salvata, ma errore file: ${fileMsg}`);
+                    || t('common.error');
+                alert(`${t('application_form.update')}: ${fileMsg}`);
                 return; // Usciamo per non navigare via, così l'utente può riprovare il file
             }
 
@@ -106,7 +105,7 @@ function ApplicationEdit(){
         }catch(error){
             const errorMsg = error.response?.data?.errors 
                 ? Object.values(error.response.data.errors).flat().join("\n")
-                : "Errore durante il salvataggio.";
+                : t('common.error');
                 
             alert(errorMsg);
         }finally{
@@ -119,36 +118,35 @@ function ApplicationEdit(){
     return (
         <div className="new-app-container">
             <div className="header-section">
-                <h1>Modifica Candidatura</h1>
-                <p>Inserisci i dettagli della posizione per cui ti sei candidato.</p>
+                <h1>{t('application_form.edit_title')}</h1>
             </div>
 
             <form onSubmit={handleSubmit} className="app-form">
                 
                 {/* SEZIONE 1: Informazioni Principali */}
                 <section className="form-section">
-                    <h3><span className="step-num">1</span> Informazioni Base</h3>
+                    <h3><span className="step-num">1</span> {t('application_form.step1')}</h3>
                     <div className="form-grid">
                         <div className="form-group">
-                            <label>Azienda *</label>
+                            <label>{t('application_form.company')} *</label>
                             <input type="text" name="company" value={form.company} onChange={handleChange} required />
                         </div>
                         <div className="form-group">
-                            <label>Ruolo *</label>
+                            <label>{t('application_form.role')} *</label>
                             <input type="text" name="role" value={form.role} onChange={handleChange} required />
                         </div>
                         <div className="form-group">
-                            <label>Data Candidatura *</label>
+                            <label>{t('application_form.applied_at')} *</label>
                             <input type="date" name="applied_at" value={form.applied_at} onChange={handleChange} required />
                         </div>
                         <div className="form-group">
-                            <label>Stato</label>
+                            <label>{t('application_form.status')}</label>
                             <select name="status" value={form.status} onChange={handleChange}>
-                                <option value="sent">Inviata</option>
-                                <option value="waiting">In attesa</option>
-                                <option value="interview">Colloquio</option>
-                                <option value="rejected">Rifiutata</option>
-                                <option value="draft">Bozza</option>
+                                <option value="sent">{t('status.sent')}</option>
+                                <option value="waiting">{t('status.waiting')}</option>
+                                <option value="interview">{t('status.interview')}</option>
+                                <option value="rejected">{t('status.rejected')}</option>
+                                <option value="draft">{t('status.draft')}</option>
                             </select>
                         </div>
                     </div>
@@ -156,57 +154,57 @@ function ApplicationEdit(){
 
                 {/* SEZIONE 2: Dettagli e Link */}
                 <section className="form-section">
-                    <h3><span className="step-num">2</span> Dettagli Posizione</h3>
+                    <h3><span className="step-num">2</span> {t('application_form.step2')}</h3>
                     <div className="form-grid">
                         <div className="form-group">
-                            <label>Sito/Source (es. LinkedIn)</label>
+                            <label>{t('application_form.source')} (es. LinkedIn)</label>
                             <input type="text" name="source" value={form.source} onChange={handleChange} />
                         </div>
                         <div className="form-group">
-                            <label>Località</label>
-                            <input type="text" name="location" value={form.location} onChange={handleChange} placeholder="Milano, Remote..." />
+                            <label>{t('application_form.location')}</label>
+                            <input type="text" name="location" value={form.location} onChange={handleChange} placeholder={t('application_form.location_placeholder')} />
                         </div>
                         <div className="form-group">
-                            <label>Tipo Contratto</label>
-                            <input type="text" name="contract_type" value={form.contract_type} onChange={handleChange} placeholder="Indeterminato, Part-time..." />
+                            <label>{t('application_form.contract_type')}</label>
+                            <input type="text" name="contract_type" value={form.contract_type} onChange={handleChange} placeholder={t('application_form.contract_placeholder')} />
                         </div>
                         <div className="form-group">
-                            <label>RAL / Range Salariale</label>
-                            <input type="text" name="salary_range" value={form.salary_range} onChange={handleChange} placeholder="es: 30k-35k" />
+                            <label>{t('application_form.salary_range')}</label>
+                            <input type="text" name="salary_range" value={form.salary_range} onChange={handleChange} placeholder={t('application_form.salary_placeholder')} />
                         </div>
                     </div>
                     <div className="form-group full-width">
-                        <label>URL Annuncio</label>
+                        <label>{t('application_form.url')}</label>
                         <input type="url" name="url" value={form.url} onChange={handleChange} />
                     </div>
                 </section>
 
                 {/* SEZIONE 3: Valutazioni e Note */}
                 <section className="form-section">
-                    <h3><span className="step-num">3</span> Valutazioni e Note</h3>
+                    <h3><span className="step-num">3</span> {t('application_form.step3')}</h3>
                     <div className="form-grid">
                         <div className="form-group">
-                            <label>Interesse (1-5)</label>
+                            <label>{t('application_form.interest_rating')}</label>
                             <input type="number" name="interest_rating" min="1" max="5" value={form.interest_rating} onChange={handleChange} />
                         </div>
                         <div className="form-group">
-                            <label>Match Score %</label>
+                            <label>{t('application_form.match_score')}</label>
                             <input type="number" name="match_score" min="0" max="100" value={form.match_score} onChange={handleChange} />
                         </div>
                     </div>
                     <div className="form-group full-width">
-                        <label>Testo dell'offerta</label>
-                        <textarea name="offer_text" value={form.offer_text} onChange={handleChange} rows="5" placeholder="Incolla qui il testo dell'annuncio..."></textarea>
+                        <label>{t('application_form.offer_text')}</label>
+                        <textarea name="offer_text" value={form.offer_text} onChange={handleChange} rows="5" placeholder={t('application_form.offer_text_placeholder')}></textarea>
                     </div>
                     <div className="form-group full-width">
-                        <label>Note personali</label>
-                        <textarea name="notes" value={form.notes} onChange={handleChange} rows="3"></textarea>
+                        <label>{t('application_form.notes')}</label>
+                        <textarea name="notes" value={form.notes} onChange={handleChange} rows="3" placeholder={t('application_form.notes_placeholder')}></textarea>
                     </div>
                 </section>
 
                 {/* SEZIONE 4: Tag */}
                 <section className="form-section">
-                    <h3><span className="step-num">4</span> Tag</h3>
+                    <h3><span className="step-num">4</span> {t('application_form.step4_tags')}</h3>
                     
                     {/* Tag esistenti selezionabili */}
                     <div className="tags-available">
@@ -242,7 +240,7 @@ function ApplicationEdit(){
                     <div className="new-tag-row">
                         <input
                             type="text"
-                            placeholder="Nuovo tag..."
+                            placeholder={t('application_form.new_tag_placeholder') ?? 'Tag'}
                             value={newTagName}
                             onChange={e => setNewTagName(e.target.value)}
                             onKeyDown={async (e) => {
@@ -255,21 +253,21 @@ function ApplicationEdit(){
                                         setSelectedTags(prev => [...prev, created.id])
                                         setNewTagName('')
                                     } catch {
-                                        alert('Tag già esistente o errore.')
+                                        alert(t('common.error'))
                                     }
                                 }
                             }}
                         />
-                        <span style={{fontSize: '17px', color: 'var(--text-hint)'}}>Premi Invio per creare</span>
+                        <span style={{fontSize: '17px', color: 'var(--text-hint)'}}>{t('application_form.tag_hint')}</span>
                     </div>
                 </section>
 
                 {/* SEZIONE 5: Allegati */}
                 <section className="form-section">
-                    <h3><span className="step-num">5</span> Documenti Allegati</h3>
+                    <h3><span className="step-num">5</span> {t('application_form.step4')}</h3>
                     <div className="form-grid">
                         <div className="form-group">
-                            <label>Curriculum Vitae (PDF, DOCX, ODT)</label>
+                            <label>{t('application_form.cv_label')} (PDF, DOCX, ODT)</label>
                             <div className="file-input-wrapper">
                                 <input 
                                     type="file" 
@@ -280,7 +278,7 @@ function ApplicationEdit(){
                             </div>
                         </div>
                         <div className="form-group">
-                            <label>Lettera di Presentazione (PDF, DOCX, ODT)</label>
+                            <label>{t('application_form.cover_label')} (PDF, DOCX, ODT)</label>
                             <div className="file-input-wrapper">
                                 <input 
                                     type="file" 
@@ -294,9 +292,9 @@ function ApplicationEdit(){
                 </section>
 
                 <div className="form-actions">
-                    <button type="button" className="btn-secondary" onClick={() => navigate('/applications')}>Annulla</button>
+                    <button type="button" className="btn-secondary" onClick={() => navigate('/applications')}>{t('application_form.cancel')}</button>
                     <button type="submit" className="btn-primary" disabled={loading}>
-                        {loading ? 'Salvataggio...' : 'Salva modifiche'}
+                        {loading ? t('application_form.updating') : t('application_form.update')}
                     </button>
                 </div>
             </form>

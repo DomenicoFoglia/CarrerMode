@@ -3,10 +3,10 @@ import './Reminders.css';
 import './Applications.css';
 import { getReminders, createReminder, updateReminder, deleteReminder } from '../api/reminders';
 import { getApplications } from '../api/applications';
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'
 
 function Reminders() {
-    const navigate = useNavigate();
+    const { t } = useTranslation();
     const [reminders, setReminders] = useState([]);
     const [applications, setApplications] = useState([]);
     const [expandedId, setExpandedId] = useState(null); // Stato per l'accordion
@@ -60,18 +60,18 @@ function Reminders() {
             await fetchData(); // Ricarichiamo i dati aggiornati
         } catch (error) {
             console.error("Errore nel salvataggio:", error);
-            alert("Errore nel salvataggio del promemoria.");
+            alert(t('common.error'));
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Sei sicuro di voler eliminare questo promemoria?")) {
+        if (window.confirm(t('reminders.confirm_delete'))) {
             try {
                 await deleteReminder(id);
                 setReminders(reminders.filter(r => r.id !== id));
                 if (expandedId === id) setExpandedId(null);
             } catch (error) {
-                alert("Errore durante l'eliminazione", error);
+                alert(t('common.error',error));
             }
         }
     };
@@ -88,84 +88,87 @@ function Reminders() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    if (loading) return <div className="loading">Caricamento promemorie...</div>;
+    if (loading) return <div className="loading">{t('common.loading')}</div>;
 
     return (
         <div className='applications-container'>
             <div className="apps-header">
-                <h1>I miei promemoria</h1>
+                <h1>{t('reminders.title')}</h1>
             </div>
 
             <div className="reminder-form-card">
                 <form onSubmit={handleSubmit} className="modern-form">
                     <div className="form-row">
                         <div className="form-group flex-2">
-                            <label>Titolo {formData.id && <span style={{color: '#3b82f6'}}>(Modifica in corso)</span>}</label>
-                            <input 
-                                type="text" 
-                                placeholder="Esempio: Chiamata conoscitiva" 
+                            <label>
+                                {t('reminders.reminder_title')}
+                                {formData.id && <span style={{ color: '#3b82f6' }}> ({t('reminders.edit_title')})</span>}
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Esempio: Chiamata conoscitiva"
                                 value={formData.title}
-                                onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                required 
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                required
                             />
                         </div>
                         <div className="form-group flex-1">
-                            <label>Azienda collegata</label>
-                            <select 
+                            <label>{t('reminders.application')}</label>
+                            <select
                                 value={formData.application_id}
-                                onChange={(e) => setFormData({...formData, application_id: e.target.value})}
+                                onChange={(e) => setFormData({ ...formData, application_id: e.target.value })}
                                 required
                             >
-                                <option value="">Seleziona...</option>
+                                <option value="">{t('common.select')}</option>
                                 {applications.map(app => (
                                     <option key={app.id} value={app.id}>{app.company}</option>
                                 ))}
                             </select>
                         </div>
                         <div className="form-group flex-1">
-                            <label>Data e Ora</label>
-                            <input 
-                                type="datetime-local" 
+                            <label>{t('reminders.remind_at')}</label>
+                            <input
+                                type="datetime-local"
                                 value={formData.remind_at}
-                                onChange={(e) => setFormData({...formData, remind_at: e.target.value})}
-                                required 
+                                onChange={(e) => setFormData({ ...formData, remind_at: e.target.value })}
+                                required
                             />
                         </div>
                     </div>
 
                     <div className="form-row">
                         <div className="form-group flex-3">
-                            <label>Note / Dettagli</label>
-                            <textarea 
-                                placeholder="Dettagli extra..." 
+                            <label>{t('reminders.notes')}</label>
+                            <textarea
+                                placeholder="Dettagli extra..."
                                 value={formData.notes}
-                                onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 rows="2"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Stato</label>
+                            <label>{t('applications.col_status')}</label>
                             <div className="checkbox-container">
-                                <input 
-                                    type="checkbox" 
+                                <input
+                                    type="checkbox"
                                     checked={formData.sent}
-                                    onChange={(e) => setFormData({...formData, sent: e.target.checked})}
+                                    onChange={(e) => setFormData({ ...formData, sent: e.target.checked })}
                                 />
-                                <span>{formData.sent ? 'Eseguito' : 'In attesa'}</span>
+                                <span>{formData.sent ? t('reminders.sent') : t('sidebar.waiting')}</span>
                             </div>
                         </div>
                         <div className="form-actions">
                             <button type="submit" className="btn-add">
-                                {formData.id ? 'Aggiorna' : 'Salva'}
+                                {formData.id ? t('reminders.save') : t('reminders.save')}
                             </button>
                             {formData.id && (
-                                <button 
-                                    type="button" 
-                                    className="btn-cancel" 
-                                    onClick={() => setFormData({title: '', remind_at: '', application_id: '', notes: '', sent: false})}
-                                    style={{marginLeft: '10px', background: '#334155'}}
+                                <button
+                                    type="button"
+                                    className="btn-cancel"
+                                    onClick={() => setFormData({ id: null, title: '', remind_at: '', application_id: '', notes: '', sent: false })}
+                                    style={{ marginLeft: '10px', background: '#334155' }}
                                 >
-                                    Annulla
+                                    {t('reminders.cancel')}
                                 </button>
                             )}
                         </div>
@@ -178,28 +181,28 @@ function Reminders() {
                     <table className="apps-table">
                         <thead>
                             <tr>
-                                <th>Titolo</th>
-                                <th>Candidatura</th>
-                                <th>Data Scadenza</th>
-                                <th style={{ textAlign: 'center' }}>Azioni</th>
+                                <th>{t('reminders.reminder_title')}</th>
+                                <th>{t('reminders.application')}</th>
+                                <th>{t('reminders.remind_at')}</th>
+                                <th style={{ textAlign: 'center' }}>{t('applications.col_actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {reminders.map((reminder) => (
                                 <React.Fragment key={reminder.id}>
                                     <tr className={expandedId === reminder.id ? 'row-expanded' : ''}>
-                                        <td className="company-name" onClick={() => toggleRow(reminder.id)} style={{cursor: 'pointer'}}>
-                                            {expandedId === reminder.id ? '▼ ' : '▶ '} {reminder.title}
+                                        <td className="company-name" onClick={() => toggleRow(reminder.id)} style={{ cursor: 'pointer' }}>
+                                            {expandedId === reminder.id ? '▼ ' : '▶ '}{reminder.title}
                                         </td>
                                         <td>{reminder.application?.company || 'N/A'}</td>
                                         <td>{new Date(reminder.remind_at).toLocaleString('it-IT')}</td>
                                         <td style={{ textAlign: 'center' }}>
                                             <div className="action-cell">
                                                 <span className={`status-badge ${reminder.sent ? 'sent' : 'waiting'}`}>
-                                                    {reminder.sent ? 'Inviato' : 'In attesa'}
+                                                    {reminder.sent ? t('reminders.sent') : t('sidebar.waiting')}
                                                 </span>
-                                                <button className="btn-icon edit" title="Modifica" onClick={() => handleEdit(reminder)}>✏️</button>
-                                                <button className="btn-icon delete" title="Elimina" onClick={() => handleDelete(reminder.id)}>🗑️</button>
+                                                <button className="btn-icon edit" title={t('reminders.edit')} onClick={() => handleEdit(reminder)}>✏️</button>
+                                                <button className="btn-icon delete" title={t('reminders.delete')} onClick={() => handleDelete(reminder.id)}>🗑️</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -207,8 +210,8 @@ function Reminders() {
                                         <tr className="notes-accordion-row">
                                             <td colSpan="4">
                                                 <div className="notes-content">
-                                                    <strong>Note:</strong>
-                                                    <p>{reminder.notes || "Nessuna nota aggiuntiva."}</p>
+                                                    <strong>{t('reminders.notes')}:</strong>
+                                                    <p>{reminder.notes || t('application_detail.no_notes')}</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -220,7 +223,7 @@ function Reminders() {
                 </div>
             ) : (
                 <div className="empty-state">
-                    <p>Non ci sono promemoria al momento.</p>
+                    <p>{t('reminders.empty')}</p>
                 </div>
             )}
         </div>

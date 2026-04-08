@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { getStats } from '../api/applications';
+import { getStats, getApplications } from '../api/applications';
 import './Dashboard.css';
-import { getApplications } from '../api/applications';
 import { getReminders } from '../api/reminders'
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function Dashboard() {
     //Statistiche nelle card
@@ -17,10 +17,11 @@ function Dashboard() {
     //Paginazione candidature e reminder
     const [currentPageApps, setCurrentPageApps] = useState(1);
     const [currentPageReminders, setCurrentPageReminders] = useState(1);
-    const itemsPerPage = 5;
-
-
     const [loading, setLoading] = useState(true); // Stato per il caricamento
+    const itemsPerPage = 5;
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -34,8 +35,6 @@ function Dashboard() {
                 setStats(statsRes.data);
                 setApplications(appsRes.data.data);
                 setReminders(remindersRes.data);
-                console.log("Dati ricevuti dal server:", statsRes.data);
-                console.log("Candidataure ricevute dal server:", appsRes.data)
             } catch (error) {
                 console.error("Errore nel caricamento statistiche:", error);
             }finally{
@@ -68,53 +67,52 @@ function Dashboard() {
     const paginatedApps = applications.slice( (currentPageApps - 1) * itemsPerPage, currentPageApps * itemsPerPage);
     const paginatedReminders = reminders.slice((currentPageReminders - 1) * itemsPerPage, currentPageReminders * itemsPerPage);
 
-    const navigate = useNavigate();
 
-    if (loading) return <div className="loading">Caricamento in corso...</div>;
+    if (loading) return <div className="loading">{t('common.loading')}</div>;
 
     return (
         <div className="dashboard-container">
-            <h1>Dashboard</h1>
-            <p className="subtitle">Bentornato! Ecco il riepilogo delle tue attività.</p>
+            <h1>{t('dashboard.title')}</h1>
+            <p className="subtitle">{t('dashboard.subtitle')}</p>
             {/* Sezione Card */}
             <div className="stats-grid">
                 <div className="stat-card">
-                    <h3>Totale Candidature</h3>
+                    <h3>{t('dashboard.total')}</h3>
                     <span className="number">{stats?.total || 0}</span>
                     <span className="card-subtitle animated">
                         {cardSubtitleIndex === 0 
-                            ? `+${stats?.this_month || 0} questo mese`
-                            : `${stats?.sent || 0} inviate`
+                            ? `+${stats?.this_month || 0} ${t('dashboard.this_month')}`
+                            : `${stats?.sent || 0} ${t('dashboard.sent_label')}`
                         }
                     </span>
                 </div>
                 <div className="stat-card green">
-                    <h3>Colloqui ottenuti</h3>
+                    <h3>{t('dashboard.interviews')}</h3>
                     <span className="number">{stats?.interview || 0}</span>
-                    <span className="card-subtitle animated">
+                    <span className="card-subtitle animated" key={`i-${cardSubtitleIndex}`}>
                         {cardSubtitleIndex === 0
-                            ? `Tasso: ${tassoColloqui}%`
-                            : `Su ${stats?.total || 0} candidature`
+                            ? `${t('dashboard.conversion_rate')} ${tassoColloqui}%`
+                            : `${t('dashboard.on_total')} ${stats?.total || 0}`
                         }
                     </span>
                 </div>
                 <div className="stat-card orange">
-                    <h3>In attesa</h3>
+                    <h3>${t('dashboard.on_total')}</h3>
                     <span className="number">{stats?.waiting || 0}</span>
-                    <span className="card-subtitle animated">
+                    <span className="card-subtitle animated" key={`w-${cardSubtitleIndex}`}>
                         {cardSubtitleIndex === 0
-                            ? `${stats?.expiring_reminders || 0} scadono presto`
-                            : `Richiedono follow-up`
+                            ? `${stats?.expiring_reminders || 0} ${t('dashboard.expiring_soon')}`
+                            : t('dashboard.follow_up')
                         }
                     </span>
                 </div>
                 <div className="stat-card red">
-                    <h3>Rifiutate</h3>
+                    <h3>{t('dashboard.rejected')}</h3>
                     <span className="number">{stats?.rejected || 0}</span>
-                    <span className="card-subtitle animated">
+                    <span className="card-subtitle animated" key={`r-${cardSubtitleIndex}`}>
                         {cardSubtitleIndex === 0
-                            ? `${percentualeRifiutate}% del totale`
-                            : `${stats?.total - stats?.rejected || 0} ancora attive`
+                            ? `${percentualeRifiutate}% ${t('dashboard.of_total')}`
+                            : `${stats?.total - stats?.rejected || 0} ${t('dashboard.still_active')}`
                         }
                     </span>
                 </div>
@@ -125,15 +123,15 @@ function Dashboard() {
                 
                 {/* Tabella Sinistra */}
                 <div className="recent-applications">
-                    <h2>Candidature Recenti</h2>
+                    <h2>{t('dashboard.recent_applications')}</h2>
                     <table className="apps-table">
                         <thead>
                             <tr>
-                                <th>Azienda</th>
-                                <th>Ruolo</th>
-                                <th>Data</th>
-                                <th>Stato</th>
-                                <th>Tag</th>
+                                <th>{t('applications.col_company')}</th>
+                                <th>{t('applications.col_role')}</th>
+                                <th>{t('applications.col_date')}</th>
+                                <th>{t('applications.col_status')}</th>
+                                <th>{t('applications.col_tags')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,7 +143,7 @@ function Dashboard() {
                                         <td>{new Date(app.created_at).toLocaleDateString('it-IT')}</td>
                                         <td>
                                             <span className={`status-badge ${app.status}`}>
-                                                {app.status}
+                                                {t('applications.col_tags')}
                                             </span>
                                         </td>
                                         <td>
@@ -169,7 +167,7 @@ function Dashboard() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5">Nessuna candidatura trovata.</td>
+                                    <td colSpan="5">{t('applications.empty')}</td>
                                 </tr>
                             )}
                             {totalPages > 1 && (
@@ -194,8 +192,8 @@ function Dashboard() {
                 {/* Pannello Reminder Destra */}
                 <aside className="dashboard-reminders">
                     <div className="reminders-header">
-                        <h2>Promemoria</h2>
-                        <span className="reminders-link" onClick={() => navigate('/reminders')}>Vedi tutti →</span>
+                        <h2>{t('dashboard.reminders_title')}</h2>
+                        <span className="reminders-link" onClick={() => navigate('/reminders')}>{t('dashboard.see_all')}</span>
                     </div>
                     <div className="reminders-list">
                         {reminders.length > 0 ? (
@@ -216,7 +214,7 @@ function Dashboard() {
                                 </div>
                             ))
                         ) : (
-                            <p className="empty-reminders">Nessun reminder.</p>
+                            <p className="empty-reminders">{t('dashboard.no_reminders')}</p>
                         )}
                         {totalePagesReminders > 1 && (
                             <div className="dashboard-pagination">
@@ -243,10 +241,10 @@ function Dashboard() {
                                 <button className="reminder-detail-close" onClick={() => setSelectedReminder(null)}>×</button>
                             </div>
                             <div className="reminder-detail-body">
-                                <p><span className="detail-label">Azienda:</span> {selectedReminder.application?.company || '—'}</p>
-                                <p><span className="detail-label">Data:</span> {new Date(selectedReminder.remind_at).toLocaleString('it-IT')}</p>
-                                <p><span className="detail-label">Note:</span> {selectedReminder.notes || 'Nessuna nota.'}</p>
-                                <p><span className="detail-label">Stato:</span> {selectedReminder.sent ? 'Completato' : 'In attesa'}</p>
+                                <p><span className="detail-label">{t('application_detail.location').replace(':', '')}:</span> {selectedReminder.application?.company || '—'}</p>
+                                <p><span className="detail-label">{t('reminders.remind_at')}:</span> {new Date(selectedReminder.remind_at).toLocaleString('it-IT')}</p>
+                                <p><span className="detail-label">{t('reminders.notes')}:</span> {selectedReminder.notes || 'Nessuna nota.'}</p>
+                                <p><span className="detail-label">{t('applications.col_status')}:</span> {selectedReminder.sent ? 'Completato' : 'In attesa'}</p>
                             </div>
                         </div>
                     )}
@@ -254,17 +252,17 @@ function Dashboard() {
 
                 {/* Pannello stastistiche */}
                 <div className="dashboard-status-chart">
-                    <h2>Stato candidature</h2>
+                    <h2>{t('dashboard.status_chart')}</h2>
                     {stats && (
                         <div className="mini-bars">
                             {[
-                                { label: 'Inviate', value: stats.sent, color: '#4a9eff' },
-                                { label: 'Colloquio', value: stats.interview, color: '#3dba7e' },
-                                { label: 'In attesa', value: stats.waiting, color: '#e8a44a' },
-                                { label: 'Rifiutate', value: stats.rejected, color: '#e05a5a' },
+                                { key: 'sent', value: stats.sent, color: '#4a9eff' },
+                                { key: 'interview', value: stats.interview, color: '#3dba7e' },
+                                { key: 'waiting', value: stats.waiting, color: '#e8a44a' },
+                                { key: 'rejected', value: stats.rejected, color: '#e05a5a' },
                             ].map(item => (
-                                <div key={item.label} className="mini-bar-row">
-                                    <span className="mini-bar-label">{item.label}</span>
+                                <div key={item.key} className="mini-bar-row">
+                                    <span className="mini-bar-label">{t(`status.${item.key}`)}</span>
                                     <div className="mini-bar-track">
                                         <div 
                                             className="mini-bar-fill"

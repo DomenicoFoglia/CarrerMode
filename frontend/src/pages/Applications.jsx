@@ -3,10 +3,12 @@ import './Applications.css';
 import { getApplications } from '../api/applications';
 import { getTags } from '../api/tags';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'
 
 function Applications() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [applications, setApplications] = useState([]);
     const [allTags, setAllTags] = useState([]);
@@ -84,14 +86,14 @@ function Applications() {
         }
     }
 
-    if (loading) return <div className="loading">Caricamento candidature...</div>;
+    if (loading) return <div className="loading">{t('common.loading_applications')}</div>;
 
     return (
         <div className='applications-container'>
             <div className="apps-header">
-                <h1>Le mie candidature</h1>
+                <h1>{t('applications.title')}</h1>
                 <button className="btn-add" onClick={() => navigate('/applications/new')}>
-                    Nuova Candidatura
+                    {t('applications.new_btn')}
                 </button>
             </div>
 
@@ -99,40 +101,38 @@ function Applications() {
                 <div className="search-box">
                     <input
                         type="text"
-                        placeholder="Cerca per azienda o ruolo..."
+                        placeholder={t('applications.search_placeholder')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                 <div className="status-filters">
                     <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                        <option value="all">Tutti gli stati</option>
-                        <option value="sent">Inviata</option>
-                        <option value="waiting">In attesa</option>
-                        <option value="interview">Colloquio</option>
-                        <option value="rejected">Rifiutata</option>
-                        <option value="draft">Bozza</option>
+                        <option value="all">{t('status.all')}</option>
+                        <option value="sent">{t('status.sent')}</option>
+                        <option value="waiting">{t('status.waiting')}</option>
+                        <option value="interview">{t('status.interview')}</option>
+                        <option value="rejected">{t('status.rejected')}</option>
+                        <option value="draft">{t('status.draft')}</option>
                     </select>
                 </div>
                 <button
                     className={`tag-filter-btn ${tagPanelOpen ? 'open' : ''}`}
                     onClick={() => setTagPanelOpen(!tagPanelOpen)}
                 >
-                    Filtra per tag
+                    {t('applications.filter_by_tag')}
                     {filterTags.length > 0 && (
                         <span className="tag-filter-count">{filterTags.length}</span>
                     )}
                 </button>
                 <div className="results-count">
-                    Trovate: <strong>{total}</strong>
+                    {t('applications.found')} <strong>{total}</strong>
                 </div>
                 <div className="per-page-select">
                     <select value={perPage} onChange={(e) => setPerPage(Number(e.target.value))}>
-                        <option value={5}>5 per pagina</option>
-                        <option value={10}>10 per pagina</option>
-                        <option value={15}>15 per pagina</option>
-                        <option value={25}>25 per pagina</option>
-                        <option value={50}>50 per pagina</option>
+                        {[5, 10, 15, 25, 50].map(n => (
+                            <option key={n} value={n}>{n} {t('applications.per_page')}</option>
+                        ))}
                     </select>
                 </div>
             </div>
@@ -140,21 +140,21 @@ function Applications() {
             {tagPanelOpen && (
                 <div className="tag-panel">
                     <div className="tag-panel-header">
-                        <span className="tag-panel-title">Seleziona uno o più tag</span>
+                        <span className="tag-panel-title">{t('applications.select_tags')}</span>
                         <div className="tag-mode-toggle">
-                            <span className="tag-mode-label">Modalità:</span>
+                            <span className="tag-mode-label">{t('applications.tag_mode_label')}</span>
                             <div className="toggle-group">
                                 <button
                                     className={`toggle-btn ${tagMode === 'OR' ? 'active-or' : ''}`}
                                     onClick={() => setTagMode('OR')}
                                 >
-                                    Almeno uno (OR)
+                                    {t('applications.tag_mode_or')}
                                 </button>
                                 <button
                                     className={`toggle-btn ${tagMode === 'AND' ? 'active-and' : ''}`}
                                     onClick={() => setTagMode('AND')}
                                 >
-                                    Tutti (AND)
+                                    {t('applications.tag_mode_and')}
                                 </button>
                             </div>
                         </div>
@@ -183,7 +183,7 @@ function Applications() {
 
                     {filterTags.length > 0 && (
                         <div className="tag-panel-footer">
-                            <span className="tag-panel-footer-label">Attivi:</span>
+                            <span className="tag-panel-footer-label">{t('applications.active_tags')}</span>
                             <div className="active-tags-row">
                                 {filterTags.map((ft, index) => (
                                     <span key={ft.id} style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
@@ -207,7 +207,7 @@ function Applications() {
                                 ))}
                             </div>
                             <button className="clear-tags-btn" onClick={() => setFilterTags([])}>
-                                Cancella tutti
+                                {t('applications.clear_tags')}
                             </button>
                         </div>
                     )}
@@ -218,12 +218,12 @@ function Applications() {
                 <table className="apps-table">
                     <thead>
                         <tr>
-                            <th>Azienda</th>
-                            <th>Ruolo</th>
-                            <th>Data</th>
-                            <th>Stato</th>
-                            <th>Tag</th>
-                            <th>Azioni</th>
+                            <th>{t('applications.col_company')}</th>
+                            <th>{t('applications.col_role')}</th>
+                            <th>{t('applications.col_date')}</th>
+                            <th>{t('applications.col_status')}</th>
+                            <th>{t('applications.col_tags')}</th>
+                            <th>{t('applications.col_actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -235,7 +235,7 @@ function Applications() {
                                     <td>{new Date(app.created_at).toLocaleDateString('it-IT')}</td>
                                     <td>
                                         <span className={`status-badge ${app.status}`}>
-                                            {app.status}
+                                            {t(`status.${app.status}`)}
                                         </span>
                                     </td>
                                     <td>
@@ -264,13 +264,13 @@ function Applications() {
                                             className="btn-small"
                                             onClick={(e) => { e.stopPropagation(); navigate(`/applications/${app.id}`) }}
                                         >
-                                            Dettagli
+                                            {t('applications.details_btn')}
                                         </button>
                                         <button
                                             className="btn-small btn-outline"
                                             onClick={(e) => { e.stopPropagation(); navigate(`/applications/${app.id}/edit`) }}
                                         >
-                                            Modifica
+                                            {t('applications.edit_btn')}
                                         </button>
                                     </td>
                                 </tr>
@@ -279,8 +279,8 @@ function Applications() {
                             <tr>
                                 <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
                                     {search || filterStatus !== 'all' || filterTags.length > 0
-                                        ? "Nessun risultato corrisponde ai filtri selezionati."
-                                        : "Non hai ancora inserito nessuna candidatura."}
+                                        ? t('applications.no_results')
+                                        : t('applications.empty')}
                                 </td>
                             </tr>
                         )}

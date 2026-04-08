@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axios from '../api/axios'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts'
 import './Statistics.css'
+import { useTranslation } from 'react-i18next'
 
 const PIE_COLORS = ['#4a9eff', '#3dba7e', '#e8a44a', '#e05a5a']
 
 function Statistics() {
-    const [stats, setStats] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -23,46 +25,46 @@ function Statistics() {
         fetchStats()
     }, [])
 
-    if (loading) return <div className="loading">Caricamento statistiche...</div>
-    if (!stats) return <div className="loading">Nessun dato trovato.</div>
+    if (loading) return <div className="loading">{t('common.loading_statistics')}</div>
+    if (!stats) return <div className="loading">{t('common.no_data')}</div>
 
     const pieData = [
-        { name: 'Inviate', value: stats.sent },
-        { name: 'Colloquio', value: stats.interview },
-        { name: 'In attesa', value: stats.waiting },
-        { name: 'Rifiutate', value: stats.rejected },
+        { name: t('status.sent'),      value: stats.sent },
+        { name: t('status.interview'), value: stats.interview },
+        { name: t('status.waiting'),   value: stats.waiting },
+        { name: t('status.rejected'),  value: stats.rejected },
     ].filter(item => item.value > 0)
 
     return (
         <div className="stats-page">
-            <h1 className="stats-title">Statistiche</h1>
+            <h1 className="stats-title">{t('statistics.title')}</h1>
 
             <div className="stats-grid">
                 <div className="stat-card">
-                    <h3>Totale</h3>
+                    <h3>{t('statistics.total')}</h3>
                     <span className="number">{stats.total}</span>
                 </div>
                 <div className="stat-card blue">
-                    <h3>Inviate</h3>
+                    <h3>{t('statistics.sent')}</h3>
                     <span className="number">{stats.sent}</span>
                 </div>
                 <div className="stat-card green">
-                    <h3>Colloqui</h3>
+                    <h3>{t('statistics.interviews')}</h3>
                     <span className="number">{stats.interview}</span>
                 </div>
                 <div className="stat-card orange">
-                    <h3>In attesa</h3>
+                    <h3>{t('statistics.waiting')}</h3>
                     <span className="number">{stats.waiting}</span>
                 </div>
                 <div className="stat-card red">
-                    <h3>Rifiutate</h3>
+                    <h3>{t('statistics.rejected')}</h3>
                     <span className="number">{stats.rejected}</span>
                 </div>
             </div>
 
             <div className="charts-grid">
                 <div className="chart-card">
-                    <h3 className="chart-title">Candidature per mese</h3>
+                    <h3 className="chart-title">{t('statistics.by_month')}</h3>
                     <ResponsiveContainer width="100%" height={260}>
                         <BarChart data={stats.by_month} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#2a3044" />
@@ -78,7 +80,7 @@ function Statistics() {
                 </div>
 
                 <div className="chart-card">
-                    <h3 className="chart-title">Distribuzione stati</h3>
+                    <h3 className="chart-title">{t('statistics.by_status')}</h3>
                     <ResponsiveContainer width="100%" height={260}>
                         <PieChart>
                             <Pie
@@ -110,7 +112,7 @@ function Statistics() {
                 {/* Grafico tag più usati */}
                 {stats.top_tags && stats.top_tags.length > 0 && (
                     <div className="chart-card" style={{marginTop: '16px'}}>
-                        <h3 className="chart-title">Tag più utilizzati</h3>
+                        <h3 className="chart-title">{t('statistics.top_tags')}</h3>
                         <div className="top-tags-list">
                             {stats.top_tags.map((tag, index) => {
                                 const maxCount = stats.top_tags[0].count
@@ -143,7 +145,7 @@ function Statistics() {
                 {/* Grafico tipo di contratto */}
                 {stats.contract_types && stats.contract_types.length > 0 && (
                     <div className="chart-card" style={{marginTop: '16px'}}>
-                        <h3 className="chart-title">Distribuzione per tipo di contratto</h3>
+                        <h3 className="chart-title">{t('statistics.by_contract')}</h3>
                         <ResponsiveContainer width="100%" height={260}>
                             <BarChart
                                 data={stats.contract_types}
