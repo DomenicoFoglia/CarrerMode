@@ -116,7 +116,7 @@ function Reminders() {
                             </label>
                             <input
                                 type="text"
-                                placeholder="Esempio: Chiamata conoscitiva"
+                                placeholder={t('reminders.title_placeholder')}
                                 value={formData.title}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 required
@@ -150,7 +150,7 @@ function Reminders() {
                         <div className="form-group flex-3">
                             <label>{t('reminders.notes')}</label>
                             <textarea
-                                placeholder="Dettagli extra..."
+                                placeholder={t('reminders.notes_placeholder')}
                                 value={formData.notes}
                                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 rows="2"

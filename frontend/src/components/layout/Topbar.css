@@ -36,6 +36,8 @@
     font-size: 1.3rem;
     color: var(--accent);
     letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
 }
 
 .topbar-nav {

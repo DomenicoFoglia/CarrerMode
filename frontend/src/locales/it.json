@@ -38,7 +38,7 @@
         "interview": "Colloquio",
         "rejected": "Rifiutate",
         "tools": "Strumenti",
-        "new_application": "+ Nuova candidatura",
+        "new_application": "Nuova candidatura",
         "settings": "Opzioni"
     },
     "status": {
@@ -194,7 +194,9 @@
         "edit": "Modifica",
         "empty": "Nessun promemoria trovato.",
         "overdue": "Scaduto",
-        "confirm_delete": "Sei sicuro di voler eliminare questo promemoria?"
+        "confirm_delete": "Sei sicuro di voler eliminare questo promemoria?",
+        "title_placeholder": "Esempio: Chiamata conoscitiva",
+        "notes_placeholder": "Dettagli extra..."
     },
     "settings": {
         "title": "Impostazioni",

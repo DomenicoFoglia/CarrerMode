@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router
 import { useEffect, useState } from 'react'
 import { getStats } from '../../api/applications'
 import { useTranslation } from 'react-i18next'
+import { LayoutDashboard, Briefcase, BarChart2, Bell, Settings, Plus } from 'lucide-react'
 
 function Sidebar({ isOpen, onClose }) {
     const [searchParams] = useSearchParams();
@@ -85,13 +86,32 @@ function Sidebar({ isOpen, onClose }) {
 
             {/* STRUMENTI, sempre visibili */}
             <div className="sidebar-label" style={{marginTop: '20px'}}>{t('sidebar.tools')}</div>
-            <div className="sidebar-link cursor" onClick={() => navigate('/applications/new')}>{t('sidebar.new_application')}</div>
-            {!isDashboard && <NavLink to="/" end className="sidebar-link">{t('nav.dashboard')}</NavLink>}
+            <div className="sidebar-link cursor" onClick={() => navigate('/applications/new')}>
+                <Plus size={15} />
+                {t('sidebar.new_application')}
+            </div>
+            {!isDashboard && <NavLink to="/" end className="sidebar-link">
+                    <LayoutDashboard size={15} />
+                    {t('nav.dashboard')}
+                </NavLink>}
             {/* se non siamo nell'area candidature E non siamo nella dashboard, mostra il link candidature*/}
-            {(!isApplicationsArea && !isDashboard) && <NavLink to="/applications" className="sidebar-link">{t('nav.applications')}</NavLink>}
-            <NavLink to="/statistics" className="sidebar-link">{t('nav.statistics')}</NavLink>
-            <NavLink to="/reminders" className="sidebar-link">{t('nav.reminders')}</NavLink>
-            <NavLink to="/settings" className="sidebar-link">{t('sidebar.settings')}</NavLink>
+            {(!isApplicationsArea && !isDashboard) && (
+                <NavLink to="/applications" className="sidebar-link">
+                    <Briefcase size={15} /> {t('nav.applications')}
+                </NavLink>
+            )}
+
+            <NavLink to="/statistics" className="sidebar-link">
+                <BarChart2 size={15} /> {t('nav.statistics')}
+            </NavLink>
+
+            <NavLink to="/reminders" className="sidebar-link">
+                <Bell size={15} /> {t('nav.reminders')}
+            </NavLink>
+
+            <NavLink to="/settings" className="sidebar-link">
+                <Settings size={15} /> {t('sidebar.settings')}
+            </NavLink>
         </div>
     )
 }

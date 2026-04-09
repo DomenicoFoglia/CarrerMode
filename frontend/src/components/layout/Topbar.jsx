@@ -31,7 +31,12 @@ function Topbar({ onMenuToggle }){
                 <span></span>
             </button>
 
-            <div className="topbar-logo">
+            <div className="topbar-logo" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
+                <img 
+                    src="/favicon-96x96.png" 
+                    alt="CareerMode logo" 
+                    style={{ width: '46px', height: '46px', objectFit: 'contain' }}
+                />
                 <span style={{color: 'var(--text-primary)'}}>Career</span>
                 <span style={{color: 'var(--accent)'}}>Mode</span>
             </div>

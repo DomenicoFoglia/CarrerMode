@@ -38,7 +38,7 @@
         "interview": "Interview",
         "rejected": "Rejected",
         "tools": "Tools",
-        "new_application": "+ New application",
+        "new_application": "New application",
         "settings": "Settings"
     },
     "status": {
@@ -192,7 +192,9 @@
         "edit": "Edit",
         "empty": "No reminders found.",
         "overdue": "Overdue",
-        "confirm_delete": "Are you sure you want to delete this reminder?"
+        "confirm_delete": "Are you sure you want to delete this reminder?",
+        "title_placeholder": "Example: Introductory call",
+        "notes_placeholder": "Extra details..."
     },
     "settings": {
         "title": "Settings",

@@ -35,6 +35,7 @@
     font-size: 17px;
     transition: all 0.15s;
     margin-bottom: 2px;
+    white-space: nowrap;
 }
 
 .sidebar-link:hover {
