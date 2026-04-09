@@ -206,7 +206,16 @@
         "save_password": "Update Password",
         "saving": "Saving...",
         "password_success": "Password updated successfully!",
-        "language_title": "Language"
+        "language_title": "Language",
+        "gemini_title": "Gemini API Key",
+        "gemini_description": "Enter your Google Gemini API key to use AI features. You can get it for free at",
+        "gemini_placeholder": "Paste your API key here...",
+        "gemini_save": "Save key",
+        "gemini_remove": "Remove",
+        "gemini_saved": "Key configured ✓",
+        "gemini_not_set": "No key configured",
+        "gemini_success": "API key saved successfully!",
+        "gemini_removed": "API key removed."
     },
     "common": {
         "loading": "Loading...",

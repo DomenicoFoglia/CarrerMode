@@ -47,7 +47,11 @@ Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destro
 Route::put('/user/theme', [UserController::class, 'updateTheme'])->middleware('auth:sanctum');
 Route::put('/user/password', [UserController::class, 'updatePassword'])->middleware('auth:sanctum');
 
+//Chiave Gemini
+Route::put('/user/gemini-key',[UserController::class, 'updateGeminiKey'])->middleware('auth:sanctum');
+Route::get('/user/gemini-key-status',[UserController::class, 'getGeminiKeyStatus'])->middleware('auth:sanctum');
+
 //Chiamte Gemini
-Route::post('/ai/analyze-offer',       [AiController::class, 'analyzeOffer'])->middleware('auth:sanctum');
-Route::post('/ai/generate-cover-letter', [AiController::class, 'generateCoverLetter'])->middleware('auth:sanctum');
+Route::post('/ai/analyze-offer',       [AiController::class, 'analyzeOffer'])->middleware(['auth:sanctum', 'throttle:10,1']);
+Route::post('/ai/generate-cover-letter', [AiController::class, 'generateCoverLetter'])->middleware(['auth:sanctum', 'throttle:10,1']);
 

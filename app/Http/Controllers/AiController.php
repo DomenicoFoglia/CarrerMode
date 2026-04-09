@@ -9,16 +9,38 @@ use Illuminate\Support\Facades\Storage;
 
 class AiController extends Controller
 {
-    private string $apiKey;
     private string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
     public function __construct()
     {
-        $this->apiKey = config('services.gemini.key');
+        //
+    }
+
+    private function getApiKey(): ?string
+    {
+        $user = \App\Models\User::find(Auth::id());
+
+        if(!$user || !$user->gemini_api_key){
+            return null;
+        }
+
+        try{
+            return decrypt($user->gemini_api_key);
+        }catch(\Exception $e){
+            \Log::error('Decrypt gemini key failed: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public function analyzeOffer(Request $request)
     {
+        $apiKey = $this->getApiKey();
+        if (!$apiKey) {
+            return response()->json([
+                'message' => 'Chiave API Gemini non configurata. Aggiungila nelle impostazioni.'
+            ], 422);
+        }
+
         $validated = $request->validate([
             'offer_text' => 'required|string|min:50',
         ]);
@@ -48,7 +70,7 @@ Rispondi SOLO con un oggetto JSON valido con questa struttura esatta, senza mark
 }
 PROMPT;
 
-        $response = $this->callGemini($prompt, $cvData);
+        $response = $this->callGemini($prompt, $cvData, $apiKey);
 
         if (!$response) {
             return response()->json(['message' => 'Errore nella chiamata a Gemini.'], 500);
@@ -59,6 +81,13 @@ PROMPT;
 
     public function generateCoverLetter(Request $request)
     {
+        $apiKey = $this->getApiKey();
+        if (!$apiKey) {
+            return response()->json([
+                'message' => 'Chiave API Gemini non configurata. Aggiungila nelle impostazioni.'
+            ], 422);
+        }
+
         $validated = $request->validate([
             'offer_text' => 'required|string|min:50',
             'company'    => 'required|string',
@@ -89,7 +118,7 @@ Non usare frasi banali come "sono lieto di candidarmi". Sii diretto e concreto.
 Rispondi SOLO con il testo della lettera, senza intestazioni, senza oggetto e senza firma.
 PROMPT;
 
-        $response = $this->callGemini($prompt, $cvData);
+        $response = $this->callGemini($prompt, $cvData, $apiKey);
 
         if (!$response) {
             return response()->json(['message' => 'Errore nella chiamata a Gemini.'], 500);
@@ -174,7 +203,7 @@ PROMPT;
         return '';
     }
 
-    private function callGemini(string $prompt, ?array $cvData = null): ?string
+    private function callGemini(string $prompt, ?array $cvData = null, string $apiKey = ''): ?string
     {
         $parts = [];
 
@@ -195,7 +224,7 @@ PROMPT;
 
         $parts[] = ['text' => $prompt];
 
-        $response = Http::post("{$this->apiUrl}?key={$this->apiKey}", [
+        $response = Http::post("{$this->apiUrl}?key={$apiKey}", [
             'contents' => [
                 ['parts' => $parts]
             ]

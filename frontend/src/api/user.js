@@ -7,3 +7,7 @@ export const updateTheme = (theme) => {
 export const updatePassword = (data) => {
     return api.put('/user/password', data)
 }
+
+export const updateGeminiKey = (key) => api.put('/user/gemini-key', { gemini_api_key: key })
+
+export const getGeminiKeyStatus = () => api.get('/user/gemini-key-status')

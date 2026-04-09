@@ -53,6 +53,15 @@ class ApplicationController extends Controller
         return response()->json($applications);
     }
 
+    // Pulisce gli URL 
+    private function cleanUrl(?string $url): ?string
+    {
+        if (!$url) return null;
+        $parsed = parse_url($url);
+        if (!$parsed) return $url;
+        return ($parsed['scheme'] ?? 'https') . '://' . ($parsed['host'] ?? '') . ($parsed['path'] ?? '');
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -62,7 +71,7 @@ class ApplicationController extends Controller
             'company' => 'required|string|max:255',
             'role' => 'required|string|max:255',
             'offer_text' => 'nullable|string',
-            'url' => 'nullable|url|max:500',
+            'url' => 'nullable|url|max:2000',
             'source' => 'nullable|string|max:100',
             'contract_type' => 'nullable|string|max:100',
             'location' => 'nullable|string|max:255',
@@ -75,6 +84,8 @@ class ApplicationController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'integer|exists:tags,id,user_id,' . Auth::id()
         ]);
+
+        $validated['url'] = $this->cleanUrl($validated['url'] ?? null);
 
         $user = \App\Models\User::find(Auth::id());
 
@@ -123,7 +134,7 @@ class ApplicationController extends Controller
             'company' => 'sometimes|required|string|max:255',
             'role' => 'sometimes|required|string|max:255',
             'offer_text' => 'nullable|string',
-            'url' => 'nullable|url|max:500',
+            'url' => 'nullable|url|max:2000',
             'source' => 'nullable|string|max:100',
             'contract_type' => 'nullable|string|max:100',
             'location' => 'nullable|string|max:255',
@@ -136,6 +147,8 @@ class ApplicationController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'integer|exists:tags,id,user_id,' . Auth::id()
         ]);
+
+        $validated['url'] = $this->cleanUrl($validated['url'] ?? null);
 
         //Aggiorniamo
         $application->update(collect($validated)->except('tags')->toArray());
@@ -248,5 +261,7 @@ class ApplicationController extends Controller
 
         return response()->json($stats);
     }
+
+    
 
 }

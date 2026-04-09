@@ -47,4 +47,30 @@ class UserController extends Controller
             'message' => 'Password aggiornata con successo!'
         ]);
     }
+
+    public function updateGeminiKey(Request $request){
+        $user = \App\Models\User::find(Auth::id());
+
+        $validated = $request->validate([
+            'gemini_api_key' => 'nullable|string|max:100',
+        ]);
+
+        //Cifratura
+        $user->update([
+            'gemini_api_key' => $validated['gemini_api_key'] ? encrypt($validated['gemini_api_key']) : null
+        ]);
+
+        return response()->json([
+            'message' => 'Chiave API aggiornata con successo',
+            'has_gemini_key' => !is_null($user->gemini_api_key)
+        ]);
+    }
+
+    public function getGeminiKeyStatus()
+    {
+        $user = \App\Models\User::find(Auth::id());
+        return response()->json([
+            'has_gemini_key' => !is_null($user->gemini_api_key)
+        ]);
+    }
 }

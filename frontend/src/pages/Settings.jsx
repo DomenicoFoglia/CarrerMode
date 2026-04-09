@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import { updateTheme, updatePassword } from '../api/user'
+import React, { useState, useEffect } from 'react'
+import { updateTheme, updatePassword, updateGeminiKey, getGeminiKeyStatus } from '../api/user'
 import useAuthStore from '../store/authStore'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import './Settings.css'
 import toast from 'react-hot-toast'
+
 
 
 function Settings(){
@@ -21,6 +22,11 @@ function Settings(){
 
     const [loading, setLoading] = useState(false);
 
+    //AI
+    const [geminiKey, setGeminiKey] = useState('');
+    const [geminiLoading, setGeminiLoading] = useState(false);
+    const [hasGeminiKey, setHasGeminiKey] = useState(false);
+
     //Temi
     const themes = [
         { id: 'midnight', name: 'Midnight', color: '#131825' },
@@ -33,7 +39,13 @@ function Settings(){
         { id: 'light-warm', name: 'Warm', color: '#fef3c7' },
         { id: 'light-green', name: 'Nature', color: '#dcfce7' },
         { id: 'royale', name: 'Royale', color: '#f7b538' },
-    ]
+    ];
+
+    useEffect(() => {
+        getGeminiKeyStatus()
+            .then(res => setHasGeminiKey(res.data.has_gemini_key))
+            .catch(console.error)
+    }, []);
 
     const handleThemeChange = async (themeId) => {
         try {
@@ -66,6 +78,26 @@ function Settings(){
         }
     };
 
+    const handleGeminiSubmit = async (e) => {
+        e.preventDefault()
+        setGeminiLoading(true)
+        try {
+            await updateGeminiKey(geminiKey)
+            if (geminiKey.trim()) {
+                toast.success(t('settings.gemini_success'))
+                setHasGeminiKey(true)
+            } else {
+                toast.success(t('settings.gemini_removed'))
+                setHasGeminiKey(false)
+            }
+            setGeminiKey('')
+        } catch (error) {
+            toast.error(t('common.error'))
+        } finally {
+            setGeminiLoading(false)
+        }
+    }
+
     return (
         <div className="settings-page">
             <h1 className="settings-title">{t('settings.title')}</h1>
@@ -91,6 +123,67 @@ function Settings(){
             <section className="settings-section">
                 <h3>{t('settings.language_title')}</h3>
                 <LanguageSwitcher />
+            </section>
+
+            {/* GEMINI API KEY */}
+            <section className="settings-section">
+                <h3>{t('settings.gemini_title')}</h3>
+                <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+                    {t('settings.gemini_description')}{' '}
+                    <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" style={{ color: 'var(--accent)' }}>
+                        aistudio.google.com
+                    </a>.
+                </p>
+
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    marginBottom: '16px',
+                    padding: '10px 16px',
+                    background: 'var(--bg-tertiary)',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-color)'
+                }}>
+                    <span style={{
+                        width: '8px', height: '8px',
+                        borderRadius: '50%',
+                        background: hasGeminiKey ? '#3dba7e' : '#e05a5a',
+                        flexShrink: 0
+                    }} />
+                    <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+                        {hasGeminiKey ? t('settings.gemini_saved') : t('settings.gemini_not_set')}
+                    </span>
+                </div>
+
+                <form onSubmit={handleGeminiSubmit} className="password-form">
+                    <div className="form-group">
+                        <input
+                            type="password"
+                            value={geminiKey}
+                            onChange={e => setGeminiKey(e.target.value)}
+                            placeholder={t('settings.gemini_placeholder')}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <button type="submit" className="btn-save" disabled={geminiLoading || !geminiKey.trim()}>
+                            {geminiLoading ? t('common.loading') : t('settings.gemini_save')}
+                        </button>
+                        {hasGeminiKey && (
+                            <button
+                                type="button"
+                                className="btn-save"
+                                style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-muted)' }}
+                                onClick={() => {
+                                    setGeminiKey('')
+                                    handleGeminiSubmit({ preventDefault: () => {} })
+                                }}
+                            >
+                                {t('settings.gemini_remove')}
+                            </button>
+                        )}
+                    </div>
+                </form>
             </section>
 
             {/* PASSWORD */}
