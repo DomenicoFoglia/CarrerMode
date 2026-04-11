@@ -85,7 +85,7 @@ class ApplicationController extends Controller
             'tags.*' => 'integer|exists:tags,id,user_id,' . Auth::id()
         ]);
 
-        $validated['url'] = $this->cleanUrl($validated['url'] ?? null);
+        
 
         $user = \App\Models\User::find(Auth::id());
 
@@ -148,7 +148,7 @@ class ApplicationController extends Controller
             'tags.*' => 'integer|exists:tags,id,user_id,' . Auth::id()
         ]);
 
-        $validated['url'] = $this->cleanUrl($validated['url'] ?? null);
+        
 
         //Aggiorniamo
         $application->update(collect($validated)->except('tags')->toArray());

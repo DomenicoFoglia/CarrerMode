@@ -50,7 +50,12 @@ function Topbar({ onMenuToggle }){
 
             <div className="topbar-user-section">
                 <LanguageSwitcher />
-                <span>{user?.name}</span>
+                <span 
+                    onClick={() => navigate('/settings')} 
+                    style={{ cursor: 'pointer' }}
+                >
+                    {user?.name}
+                </span>
                 <button onClick={handleLogout} className="logout-link">
                     {t('nav.logout')}
                 </button>

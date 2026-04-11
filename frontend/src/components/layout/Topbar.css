@@ -77,6 +77,18 @@
     font-size: 0.9rem;
 }
 
+.topbar-user-section span {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.topbar-user-section span:hover {
+    color: var(--accent);
+}
+
 .logout-link {
     background-color: var(--accent-muted);
     border: none;
