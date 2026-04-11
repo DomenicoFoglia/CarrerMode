@@ -18,7 +18,6 @@ Route::get('/user', function (Request $request) {
 Route::get('/applications/stats', [ApplicationController::class, 'stats'])->middleware('auth:sanctum');
 Route::apiResource('applications', ApplicationController::class)->middleware('auth:sanctum');
 
-
 //Registrazione
 Route::post('/auth/register', [AuthController::class, 'register']);
 
@@ -55,3 +54,5 @@ Route::get('/user/gemini-key-status',[UserController::class, 'getGeminiKeyStatus
 Route::post('/ai/analyze-offer',       [AiController::class, 'analyzeOffer'])->middleware(['auth:sanctum', 'throttle:10,1']);
 Route::post('/ai/generate-cover-letter', [AiController::class, 'generateCoverLetter'])->middleware(['auth:sanctum', 'throttle:10,1']);
 
+//Aggiorna nome utente
+Route::put('/user/name', [UserController::class, 'updateName'])->middleware('auth:sanctum');

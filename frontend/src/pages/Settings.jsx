@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { updateTheme, updatePassword, updateGeminiKey, getGeminiKeyStatus } from '../api/user'
+import { updateTheme, updatePassword, updateGeminiKey, getGeminiKeyStatus, updateName } from '../api/user'
 import useAuthStore from '../store/authStore'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '../components/LanguageSwitcher'
@@ -26,6 +26,10 @@ function Settings(){
     const [geminiKey, setGeminiKey] = useState('');
     const [geminiLoading, setGeminiLoading] = useState(false);
     const [hasGeminiKey, setHasGeminiKey] = useState(false);
+
+    //Gestione nome utente
+    const [newName, setNewName] = useState('');
+    const [nameLoading, setNameLoading] = useState(false);
 
     //Temi
     const themes = [
@@ -98,6 +102,21 @@ function Settings(){
         }
     }
 
+    const handleNameSubmit = async (e) => {
+        e.preventDefault()
+        setNameLoading(true)
+        try {
+            const res = await updateName(newName)
+            setUser({ ...user, name: res.data.user.name })
+            toast.success(t('settings.name_success'))
+            setNewName('')
+        } catch (error) {
+            toast.error(t('common.error'))
+        } finally {
+            setNameLoading(false)
+        }
+    }
+
     return (
         <div className="settings-page">
             <h1 className="settings-title">{t('settings.title')}</h1>
@@ -117,6 +136,25 @@ function Settings(){
                         </div>
                     ))}
                 </div>
+            </section>
+
+            {/* NOME UTENTE */}
+            <section className="settings-section">
+                <h3>{t('settings.name_title')}</h3>
+                <form onSubmit={handleNameSubmit} className="password-form">
+                    <div className="form-group">
+                        <label>{t('settings.name_title')}</label>
+                        <input
+                            type="text"
+                            value={newName}
+                            onChange={e => setNewName(e.target.value)}
+                            placeholder={user?.name}
+                        />
+                    </div>
+                    <button type="submit" className="btn-save" disabled={nameLoading || !newName.trim()}>
+                        {nameLoading ? t('common.loading') : t('settings.name_save')}
+                    </button>
+                </form>
             </section>
 
             {/* GEMINI API KEY */}

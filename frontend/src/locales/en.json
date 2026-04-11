@@ -216,7 +216,12 @@
         "gemini_saved": "Key configured ✓",
         "gemini_not_set": "No key configured",
         "gemini_success": "API key saved successfully!",
-        "gemini_removed": "API key removed."
+        "gemini_removed": "API key removed.",
+        "name_title": "Username",
+        "name_placeholder": "Your name...",
+        "name_save": "Update name",
+        "name_success": "Name updated successfully!"
+
     },
     "common": {
         "loading": "Loading...",

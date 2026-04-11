@@ -73,4 +73,20 @@ class UserController extends Controller
             'has_gemini_key' => !is_null($user->gemini_api_key)
         ]);
     }
+
+    public function updateName(Request $request)
+    {
+        $user = \App\Models\User::find(Auth::id());
+
+        $validated = $request->validate([
+            'name' => 'required|string|min:2|max:100',
+        ]);
+
+        $user->update(['name' => $validated['name']]);
+
+        return response()->json([
+            'message' => 'Nome aggiornato con successo',
+            'user'    => $user
+        ]);
+    }
 }

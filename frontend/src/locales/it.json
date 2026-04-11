@@ -39,7 +39,7 @@
         "rejected": "Rifiutate",
         "tools": "Strumenti",
         "new_application": "Nuova candidatura",
-        "settings": "Opzioni"
+        "settings": "Impostazioni"
     },
     "status": {
         "sent": "Inviata",
@@ -218,7 +218,11 @@
         "gemini_saved": "Chiave configurata ✓",
         "gemini_not_set": "Nessuna chiave configurata",
         "gemini_success": "Chiave API salvata con successo!",
-        "gemini_removed": "Chiave API rimossa."
+        "gemini_removed": "Chiave API rimossa.",
+        "name_title": "Nome Utente",
+        "name_placeholder": "Il tuo nome...",
+        "name_save": "Aggiorna nome",
+        "name_success": "Nome aggiornato con successo!"
     },
     "common": {
         "loading": "Caricamento...",
