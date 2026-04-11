@@ -97,4 +97,5 @@ class AttachmentController extends Controller
 
         return response()->json(['message' => 'Allegato eliminato correttamente']);
     }
+
 }

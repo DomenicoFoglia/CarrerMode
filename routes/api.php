@@ -14,6 +14,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+//Esporta dati
+Route::get('/applications/export',[ApplicationController::class, 'export'])->middleware('auth:sanctum');
+
 //Rotte per le candidature
 Route::get('/applications/stats', [ApplicationController::class, 'stats'])->middleware('auth:sanctum');
 Route::apiResource('applications', ApplicationController::class)->middleware('auth:sanctum');

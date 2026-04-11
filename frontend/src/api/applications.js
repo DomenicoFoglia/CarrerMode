@@ -26,3 +26,6 @@ export const updateApplication = (id, data) => {
 
 export const deleteApplication = (id) => api.delete(`/applications/${id}`);
 
+export const exportApplications = () => 
+    api.get('/applications/export', { responseType: 'blob' })
+

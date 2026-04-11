@@ -71,7 +71,8 @@
         "col_tags": "Tags",
         "col_actions": "Actions",
         "details_btn": "Details",
-        "edit_btn": "Edit"
+        "edit_btn": "Edit",
+        "export_btn": "Export CSV"
     },
     "application_detail": {
         "back": "← Back to list",

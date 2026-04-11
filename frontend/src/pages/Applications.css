@@ -468,6 +468,24 @@
     cursor: not-allowed;
 }
 
+/* Bottone Esporta in CSV */
+.btn-export {
+    background: rgba(61, 186, 126, 0.1);
+    border: 1px solid #3dba7e;
+    color: #3dba7e;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn-export:hover {
+    background: #3dba7e;
+    color: white;
+}
+
 @media (max-width: 768px) {
     .applications-container {
         padding: 16px;

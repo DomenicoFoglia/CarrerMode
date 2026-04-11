@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import './Applications.css';
-import { getApplications } from '../api/applications';
+import { getApplications, exportApplications } from '../api/applications';
 import { getTags } from '../api/tags';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 
 function Applications() {
     const [searchParams] = useSearchParams();
@@ -86,15 +87,38 @@ function Applications() {
         }
     }
 
+    //Esporta dati in CSV
+    const handleExport = async () => {
+        try {
+            const res = await exportApplications()
+            const url = window.URL.createObjectURL(new Blob([res.data]))
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', `candidature_${new Date().toISOString().slice(0,10)}.csv`)
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+            window.URL.revokeObjectURL(url)
+            toast.success('File esportato con successo!')
+        } catch (error) {
+            toast.error(t('common.error'))
+        }
+    }
+
     if (loading) return <div className="loading">{t('common.loading_applications')}</div>;
 
     return (
         <div className='applications-container'>
             <div className="apps-header">
                 <h1>{t('applications.title')}</h1>
-                <button className="btn-add" onClick={() => navigate('/applications/new')}>
-                    {t('applications.new_btn')}
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <button className="btn-export" onClick={handleExport}>
+                        ↓ {t('applications.export_btn')}
+                    </button>
+                    <button className="btn-add" onClick={() => navigate('/applications/new')}>
+                        + {t('applications.new_btn')}
+                    </button>
+                </div>
             </div>
 
             <div className="filters-bar">

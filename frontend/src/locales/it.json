@@ -71,7 +71,8 @@
         "col_tags": "Tag",
         "col_actions": "Azioni",
         "details_btn": "Dettagli",
-        "edit_btn": "Modifica"
+        "edit_btn": "Modifica",
+        "export_btn": "Esporta CSV"
     },
     "application_detail": {
         "back": "← Torna alla lista",

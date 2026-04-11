@@ -262,6 +262,52 @@ class ApplicationController extends Controller
         return response()->json($stats);
     }
 
-    
+    public function export()
+    {
+        $user = \App\Models\User::find(Auth::id());
+        
+        $applications = $user->applications()->with('tags')->latest()->get();
+
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="candidature_' . date('Y-m-d') . '.csv"',
+        ];
+
+        $callback = function() use ($applications) {
+            $file = fopen('php://output', 'w');
+            
+            // BOM per Excel (supporto caratteri speciali)
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Intestazioni colonne
+            fputcsv($file, [
+                'Azienda', 'Ruolo', 'Stato', 'Data Candidatura',
+                'Luogo', 'Tipo Contratto', 'RAL', 'Fonte',
+                'Interesse (1-5)', 'Match Score', 'Tag', 'Note'
+            ], ';');
+
+            foreach ($applications as $app) {
+                $tags = $app->tags->pluck('name')->join(', ');
+                fputcsv($file, [
+                    $app->company,
+                    $app->role,
+                    $app->status,
+                    $app->applied_at,
+                    $app->location,
+                    $app->contract_type,
+                    $app->salary_range,
+                    $app->source,
+                    $app->interest_rating,
+                    $app->match_score,
+                    $tags,
+                    $app->notes,
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 
 }
