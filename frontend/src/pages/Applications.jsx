@@ -241,21 +241,43 @@ function Applications() {
                                     <td>
                                         <div className="row-tags">
                                             {app.tags && app.tags.length > 0 ? (
-                                                app.tags.map(tag => (
-                                                    <span
-                                                        key={tag.id}
-                                                        className={`tag-badge ${filterTags.find(t => t.id === tag.id) ? 'tag-active' : ''}`}
-                                                        style={{
-                                                            backgroundColor: tag.color + '22',
-                                                            color: tag.color,
-                                                            border: `1px solid ${tag.color}`
-                                                        }}
-                                                    >
-                                                        {tag.name}
-                                                    </span>
-                                                ))
+                                                <>
+                                                    {app.tags.slice(0, 3).map(tag => (
+                                                        <span
+                                                            key={tag.id}
+                                                            className={`tag-badge ${filterTags.find(t => t.id === tag.id) ? 'tag-active' : ''}`}
+                                                            style={{
+                                                                backgroundColor: tag.color + '22',
+                                                                color: tag.color,
+                                                                border: `1px solid ${tag.color}`
+                                                            }}
+                                                        >
+                                                            {tag.name}
+                                                        </span>
+                                                    ))}
+                                                    {app.tags.length > 3 && (
+                                                        <span className="tag-badge-more">
+                                                            +{app.tags.length - 3}
+                                                            <div className="tag-tooltip">
+                                                                {app.tags.slice(3).map(tag => (
+                                                                    <span
+                                                                        key={tag.id}
+                                                                        className="tag-badge"
+                                                                        style={{
+                                                                            backgroundColor: tag.color + '22',
+                                                                            color: tag.color,
+                                                                            border: `1px solid ${tag.color}`
+                                                                        }}
+                                                                    >
+                                                                        {tag.name}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </span>
+                                                    )}
+                                                </>
                                             ) : (
-                                                <span style={{color: '#4a5060', fontSize: '12px'}}>—</span>
+                                                <span style={{ color: '#4a5060', fontSize: '12px' }}>—</span>
                                             )}
                                         </div>
                                     </td>

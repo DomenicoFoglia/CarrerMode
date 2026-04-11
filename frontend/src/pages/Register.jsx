@@ -20,9 +20,9 @@ function Register() {
     const setUser = useAuthStore((state) => state.setUser);
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setError(null)
-        setLoading(true)
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
 
         try {
             const response = await api.post('/auth/register', {

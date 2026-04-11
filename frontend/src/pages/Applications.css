@@ -121,6 +121,17 @@
     font-size: 15px;
     border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.apps-table td:nth-child(5),
+.apps-table td:nth-child(6) {
+    white-space: normal;
+    overflow: visible;
+    max-width: none;
 }
 
 .apps-table tr:last-child td {
@@ -352,6 +363,50 @@
 .tag-badge.tag-active {
     box-shadow: 0 0 0 2px currentColor;
     font-weight: 600;
+}
+
+.tag-badge-more {
+    position: relative;
+    cursor: default;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--accent-muted);
+    border: 3px solid var(--border-color);
+}
+
+.tag-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 160px;
+    max-width: 240px;
+    z-index: 50;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+/* Freccetta */
+.tag-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--border-color);
+}
+
+.tag-badge-more:hover .tag-tooltip {
+    display: flex;
 }
 
 .clear-tags-btn {
