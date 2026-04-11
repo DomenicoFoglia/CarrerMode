@@ -108,7 +108,12 @@
         "ai_cover_title": "Cover Letter generata",
         "ai_copy": "Copia",
         "ai_copied": "Copiata negli appunti!",
-        "ai_generating": "Generazione in corso..."
+        "ai_generating": "Generazione in corso...",
+        "attachments_title": "Allegati",
+        "no_attachments": "Nessun allegato caricato.",
+        "download": "Scarica",
+        "delete_attachment": "Elimina allegato",
+        "confirm_delete_attachment": "Sei sicuro di voler eliminare questo allegato?"
     },
     "application_form": {
         "new_title": "Nuova Candidatura",

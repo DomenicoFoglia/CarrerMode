@@ -54,13 +54,13 @@ class ApplicationController extends Controller
     }
 
     // Pulisce gli URL 
-    private function cleanUrl(?string $url): ?string
-    {
-        if (!$url) return null;
-        $parsed = parse_url($url);
-        if (!$parsed) return $url;
-        return ($parsed['scheme'] ?? 'https') . '://' . ($parsed['host'] ?? '') . ($parsed['path'] ?? '');
-    }
+    // private function cleanUrl(?string $url): ?string
+    // {
+    //     if (!$url) return null;
+    //     $parsed = parse_url($url);
+    //     if (!$parsed) return $url;
+    //     return ($parsed['scheme'] ?? 'https') . '://' . ($parsed['host'] ?? '') . ($parsed['path'] ?? '');
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -113,7 +113,7 @@ class ApplicationController extends Controller
 
         //Cerca la candidatura tra quelle dell'utente, se la trova la ritorna altrimenti, con 
         //la funzione findOrFail(), ritorna direttamente 404
-        $application = $user->applications()->with(['reminders', 'tags'])->findOrFail($id);
+        $application = $user->applications()->with(['reminders', 'tags', 'attachments'])->findOrFail($id);
 
         return response()->json([
             'message' => 'Candidatura trovata',

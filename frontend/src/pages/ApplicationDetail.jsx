@@ -1,11 +1,12 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import './ApplicationDetail.css';
 import { getApplication, deleteApplication  } from '../api/applications';
-import { analyzeOffer, generateCoverLetter } from '../api/ai'
+import { analyzeOffer, generateCoverLetter } from '../api/ai';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast'
-import ConfirmModal from '../components/ConfirmModal'
+import toast from 'react-hot-toast';
+import ConfirmModal from '../components/ConfirmModal';
+import { downloadAttachment, deleteAttachment } from '../api/attachments';
 
 function ApplicationDetail() {
     const { id } = useParams(); 
@@ -16,6 +17,10 @@ function ApplicationDetail() {
     const [application, setApplication] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    //Gestione allegati
+    const [attachmentToDelete, setAttachmentToDelete] = useState(null);
+    const [confirmAttachmentOpen, setConfirmAttachmentOpen] = useState(false);
 
     //AI
     const [aiLoading, setAiLoading] = useState(false);
@@ -54,6 +59,43 @@ function ApplicationDetail() {
             console.error(err);
         }
     };
+
+    const handleDownload = async (attachment) => {
+        try {
+            const res = await downloadAttachment(attachment.id)
+            const url = window.URL.createObjectURL(new Blob([res.data]))
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', attachment.filename)
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+            window.URL.revokeObjectURL(url)
+        } catch (error) {
+            toast.error(t('common.error'))
+        }
+    }
+
+    const handleDeleteAttachment = (attachment) => {
+        setAttachmentToDelete(attachment)
+        setConfirmAttachmentOpen(true)
+    }
+
+    const handleDeleteAttachmentConfirmed = async () => {
+        setConfirmAttachmentOpen(false)
+        try {
+            await deleteAttachment(attachmentToDelete.id)
+            setApplication(prev => ({
+                ...prev,
+                attachments: prev.attachments.filter(a => a.id !== attachmentToDelete.id)
+            }))
+            toast.success('Allegato eliminato')
+        } catch (error) {
+            toast.error(t('common.error'))
+        } finally {
+            setAttachmentToDelete(null)
+        }
+    }
 
     const handleAnalyze = async () => {
         if (!application.offer_text) {
@@ -225,6 +267,53 @@ function ApplicationDetail() {
                     )}
                 </div>
             </div>
+
+            {/* ALLEGATI */}
+            <div className="detail-card full-width">
+                <h3>{t('application_detail.attachments_title')}</h3>
+                {application.attachments && application.attachments.length > 0 ? (
+                    <div className="attachments-list">
+                        {application.attachments.map(att => (
+                            <div key={att.id} className="attachment-item">
+                                <div className="attachment-info">
+                                    <span className="attachment-icon">
+                                        {att.type === 'cv' ? '📄' : '✉️'}
+                                    </span>
+                                    <div className="attachment-details">
+                                        <span className="attachment-name">{att.filename}</span>
+                                        <span className="attachment-meta">
+                                            {att.type === 'cv' ? 'CV' : 'Cover Letter'} · {(att.size / 1024).toFixed(0)} KB
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="attachment-actions">
+                                    <button
+                                        className="btn-attachment-download"
+                                        onClick={() => handleDownload(att)}
+                                    >
+                                        {t('application_detail.download')}
+                                    </button>
+                                    <button
+                                        className="btn-attachment-delete"
+                                        onClick={() => handleDeleteAttachment(att)}
+                                    >
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p style={{ color: '#4a5060' }}>{t('application_detail.no_attachments')}</p>
+                )}
+            </div>
+
+            <ConfirmModal
+                isOpen={confirmAttachmentOpen}
+                message={t('application_detail.confirm_delete_attachment')}
+                onConfirm={handleDeleteAttachmentConfirmed}
+                onCancel={() => { setConfirmAttachmentOpen(false); setAttachmentToDelete(null) }}
+            />
 
             {/* PANNELLO AI */}
             {aiPanel === 'analysis' && (

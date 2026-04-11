@@ -108,7 +108,12 @@
         "ai_cover_title": "Generated Cover Letter",
         "ai_copy": "Copy",
         "ai_copied": "Copied to clipboard!",
-        "ai_generating": "Generating..."
+        "ai_generating": "Generating...",
+        "attachments_title": "Attachments",
+        "no_attachments": "No attachments uploaded.",
+        "download": "Download",
+        "delete_attachment": "Delete attachment",
+        "confirm_delete_attachment": "Are you sure you want to delete this attachment?"
     },
     "application_form": {
         "new_title": "New Application",

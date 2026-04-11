@@ -12,3 +12,6 @@ export const uploadAttachment = (applicationId, type, file) => {
 export const deleteAttachment = (id) => {
     return api.delete(`/attachments/${id}`)
 }
+
+export const downloadAttachment = (id) => 
+    api.get(`/attachments/${id}`, { responseType: 'blob' })
