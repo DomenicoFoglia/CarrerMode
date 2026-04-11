@@ -67,6 +67,38 @@
 .cursor { cursor: pointer; }
 
 
+@media (max-width: 1220px) {
+    .sidebar {
+        position: fixed;
+        top: 60px;
+        left: -200px;
+        width: 200px;
+        height: calc(100vh - 60px);
+        z-index: 100;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.sidebar-mobile-open {
+        left: 0;
+    }
+
+    .sidebar-close {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 4px 8px;
+        margin-left: auto;
+        margin-bottom: 8px;
+    }
+
+    .sidebar-close:hover {
+        color: #e05a5a;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;

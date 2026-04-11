@@ -119,12 +119,6 @@ function Settings(){
                 </div>
             </section>
 
-            {/* LINGUA */}
-            <section className="settings-section">
-                <h3>{t('settings.language_title')}</h3>
-                <LanguageSwitcher />
-            </section>
-
             {/* GEMINI API KEY */}
             <section className="settings-section">
                 <h3>{t('settings.gemini_title')}</h3>

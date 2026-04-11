@@ -207,6 +207,7 @@
         "saving": "Saving...",
         "password_success": "Password updated successfully!",
         "language_title": "Language",
+        "language_description": "Choose the interface language. Your preference is saved automatically.",
         "gemini_title": "Gemini API Key",
         "gemini_description": "Enter your Google Gemini API key to use AI features. You can get it for free at",
         "gemini_placeholder": "Paste your API key here...",

@@ -63,7 +63,15 @@ function Dashboard() {
         <div className="dashboard-container">
             <div className="dash-welcome">
                     <span className="dash-welcome-text">
-                        {t('dashboard.title')}, <strong>{user?.name}</strong>
+                        {t('dashboard.title')},
+                        <strong>
+                            <span 
+                                onClick={() => navigate('/settings')} 
+                                style={{ cursor: 'pointer' }}
+                            >
+                                {' '}{user?.name}
+                            </span>
+                        </strong>
                     </span>
                     <span className="dash-welcome-date">
                         {new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })}

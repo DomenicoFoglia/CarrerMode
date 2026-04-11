@@ -13,9 +13,21 @@ import Reminders from './pages/Reminders'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
 import AppShell from './components/layout/AppShell'
+import { useEffect } from 'react'
+import useAuthStore from './store/authStore'
+import api from './api/axios'
 
 
 function App() {
+  const { token, setUser } = useAuthStore();
+
+  useEffect(() => {
+        if (token) {
+            api.get('/user').then(res => setUser(res.data)).catch(() => {})
+        }
+    }, []);
+
+    
   return (
     <Routes>
       {/* Rotte pubbliche */}
