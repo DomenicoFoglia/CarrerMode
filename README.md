@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/public/android-chrome-192x192.png" width="80" alt="CarrerMode logo" />
+  <img src="frontend/public/web-app-manifest-192x192.png" width="80" alt="CarrerMode logo" />
 </p>
 
 <h1 align="center">CarrerMode</h1>
