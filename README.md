@@ -1,4 +1,8 @@
-# 🦅 CarrerMode
+<p align="center">
+  <img src="./frontend/public/android-chrome-192x192.png" width="80" alt="CarrerMode logo" />
+</p>
+
+# CarrerMode
 
 **CarrerMode** è una web application full stack per gestire le candidature di lavoro in modo strutturato e intelligente. Nata da un'esigenza reale, permette di tracciare ogni candidatura, valutare le offerte con l'intelligenza artificiale, impostare promemoria via email e monitorare i propri progressi con statistiche dettagliate.
 
