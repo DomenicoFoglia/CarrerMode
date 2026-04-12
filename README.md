@@ -2,7 +2,9 @@
   <img src="frontend/public/web-app-manifest-192x192.png" width="80" alt="CarrerMode logo" />
 </p>
 
-<h1 align="center">CarrerMode</h1>
+<h1 align="center">
+  <span style="color:#e0e4ee">Carrer</span><span style="color:#4a9eff">Mode</span>
+</h1>
 
 <p align="center">
   Web application full stack per gestire le candidature di lavoro in modo strutturato e intelligente.<br>
