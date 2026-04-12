@@ -1,12 +1,13 @@
 <p align="center">
-  <img src="./frontend/public/android-chrome-192x192.png" width="80" alt="CarrerMode logo" />
+  <img src="frontend/public/android-chrome-192x192.png" width="80" alt="CarrerMode logo" />
 </p>
 
-# CarrerMode
+<h1 align="center">CarrerMode</h1>
 
-**CarrerMode** è una web application full stack per gestire le candidature di lavoro in modo strutturato e intelligente. Nata da un'esigenza reale, permette di tracciare ogni candidatura, valutare le offerte con l'intelligenza artificiale, impostare promemoria via email e monitorare i propri progressi con statistiche dettagliate.
-
-> Progetto realizzato come portfolio personale da **Domenico Foglia** 2026.
+<p align="center">
+  Web application full stack per gestire le candidature di lavoro in modo strutturato e intelligente.<br>
+  Traccia ogni candidatura, valuta le offerte con l'AI, imposta reminder via email e monitora i tuoi progressi.
+</p>
 
 ---
 
