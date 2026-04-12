@@ -3,8 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="frontend/public/android-chrome-192x192.png" width="80" alt="CarrerMode logo" /><br>
-  <img src="frontend/public/logo-text.svg" alt="CarrerMode" />
+  <img src="frontend/public/logo-text-readme.svg" alt="CarrerMode" />
 </p>
 
 <p align="center">
