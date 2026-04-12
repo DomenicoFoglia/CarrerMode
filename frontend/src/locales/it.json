@@ -21,6 +21,21 @@
         "password_placeholder": "Minimo 12 caratteri",
         "password_hint": "Almeno 12 caratteri, una maiuscola, un numero e un simbolo"
     },
+    "onboarding": {
+        "step1_title": "Benvenuto in CarrerMode!",
+        "step1_desc": "Il tuo strumento per tenere tutto sotto controllo durante la ricerca lavoro. Candidature, promemoria, statistiche e molto altro — tutto in un unico posto.",
+        "step2_title": "Gestisci le candidature",
+        "step2_desc": "Aggiungi ogni posizione a cui ti candidi. Traccia lo stato, la data, l'azienda, il ruolo, il tipo di contratto e la RAL. Usa i tag colorati per organizzare tutto.",
+        "step3_title": "Promemoria e statistiche",
+        "step3_desc": "Imposta promemoria via email per non dimenticare i follow-up. Monitora il tuo andamento con grafici e statistiche aggiornati in tempo reale.",
+        "step4_title": "Pronto per iniziare!",
+        "step4_desc": "Puoi personalizzare il tema, cambiare lingua e configurare la chiave API Gemini per l'analisi AI dalle Impostazioni. Buona fortuna!",
+        "next": "Avanti",
+        "prev": "Indietro",
+        "finish": "Inizia!",
+        "skip": "Salta",
+        "repeat_btn": "Rivedi il tutorial"
+    },
     "nav": {
         "dashboard": "Dashboard",
         "applications": "Candidature",

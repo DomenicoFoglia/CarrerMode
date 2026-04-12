@@ -59,3 +59,7 @@ Route::post('/ai/generate-cover-letter', [AiController::class, 'generateCoverLet
 
 //Aggiorna nome utente
 Route::put('/user/name', [UserController::class, 'updateName'])->middleware('auth:sanctum');
+
+//Tutorial
+Route::post('/user/onboarding-complete', [UserController::class, 'completeOnboarding'])->middleware('auth:sanctum');
+Route::post('/user/onboarding-reset', [UserController::class, 'resetOnboarding'])->middleware('auth:sanctum');

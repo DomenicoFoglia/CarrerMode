@@ -21,6 +21,21 @@
         "password_placeholder": "At least 12 characters",
         "password_hint": "At least 12 characters, one uppercase, one number and one symbol"
     },
+    "onboarding": {
+        "step1_title": "Welcome to CarrerMode!",
+        "step1_desc": "Your tool to keep everything under control during your job search. Applications, reminders, statistics and more — all in one place.",
+        "step2_title": "Manage your applications",
+        "step2_desc": "Add every position you apply to. Track status, date, company, role, contract type and salary. Use colored tags to keep everything organized.",
+        "step3_title": "Reminders and statistics",
+        "step3_desc": "Set email reminders so you never forget a follow-up. Monitor your progress with charts and statistics updated in real time.",
+        "step4_title": "Ready to start!",
+        "step4_desc": "You can customize the theme, change language and configure your Gemini API key for AI analysis from Settings. Good luck!",
+        "next": "Next",
+        "prev": "Back",
+        "finish": "Let's go!",
+        "skip": "Skip",
+        "repeat_btn": "Replay tutorial"
+    },
     "nav": {
         "dashboard": "Dashboard",
         "applications": "Applications",

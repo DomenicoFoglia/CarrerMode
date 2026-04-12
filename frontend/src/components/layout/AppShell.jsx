@@ -2,11 +2,21 @@ import './AppShell.css'
 import { Outlet } from 'react-router-dom'
 import Topbar from './Topbar'
 import Sidebar from './Sidebar'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
+import OnboardingModal from '../OnboardingModal'
+import useAuthStore from '../../store/authStore'
 
 function AppShell() {
-    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { user } = useAuthStore();
+    const [showOnboarding, setShowOnboarding] = useState(false);
+
+    useEffect(() => {
+        if (user && !user.onboarding_completed) {
+            setShowOnboarding(true)
+        }
+    }, [user]);
 
     return (
     <div className="app-shell">
@@ -67,6 +77,9 @@ function AppShell() {
                 },
             }}
         />
+        {showOnboarding && (
+            <OnboardingModal onClose={() => setShowOnboarding(false)} />
+        )}
     </div>
     )
 }

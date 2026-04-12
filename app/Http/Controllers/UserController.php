@@ -89,4 +89,18 @@ class UserController extends Controller
             'user'    => $user
         ]);
     }
+
+    public function completeOnboarding()
+    {
+        $user = \App\Models\User::find(Auth::id());
+        $user->update(['onboarding_completed' => true]);
+        return response()->json(['message' => 'Onboarding completato']);
+    }
+
+    public function resetOnboarding()
+    {
+        $user = \App\Models\User::find(Auth::id());
+        $user->update(['onboarding_completed' => false]);
+        return response()->json(['message' => 'Onboarding resettato']);
+    }
 }

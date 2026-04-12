@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { updateTheme, updatePassword, updateGeminiKey, getGeminiKeyStatus, updateName } from '../api/user'
+import { updateTheme, updatePassword, updateGeminiKey, getGeminiKeyStatus, updateName, resetOnboarding } from '../api/user'
 import useAuthStore from '../store/authStore'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import './Settings.css'
 import toast from 'react-hot-toast'
@@ -9,6 +10,7 @@ import toast from 'react-hot-toast'
 
 
 function Settings(){
+    const navigate = useNavigate();
     const { t } = useTranslation();
     //recuperiamo l'utente
     const {user, setUser} = useAuthStore();
@@ -114,6 +116,17 @@ function Settings(){
             toast.error(t('common.error'))
         } finally {
             setNameLoading(false)
+        }
+    }
+
+    const handleResetOnboarding = async () => {
+        try {
+            await resetOnboarding();
+            setUser({ ...user, onboarding_completed: false });
+            toast.success(t('onboarding.repeat_btn'));
+            navigate('/');
+        } catch (error) {
+            toast.error(t('common.error'));
         }
     }
 
@@ -253,6 +266,17 @@ function Settings(){
                         {loading ? t('settings.saving') : t('settings.save_password')}
                     </button>
                 </form>
+            </section>
+
+            {/* TUTORIAL */}
+            <section className="settings-section">
+                <h3>{t('onboarding.repeat_btn')}</h3>
+                <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+                    {t('settings.language_description')}
+                </p>
+                <button className="btn-save" onClick={handleResetOnboarding}>
+                    {t('onboarding.repeat_btn')} 🎓
+                </button>
             </section>
         </div>
     );

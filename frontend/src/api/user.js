@@ -13,3 +13,6 @@ export const updateGeminiKey = (key) => api.put('/user/gemini-key', { gemini_api
 export const getGeminiKeyStatus = () => api.get('/user/gemini-key-status')
 
 export const updateName = (name) => api.put('/user/name', { name })
+
+export const completeOnboarding = () => api.post('/user/onboarding-complete')
+export const resetOnboarding = () => api.post('/user/onboarding-reset')
