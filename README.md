@@ -13,7 +13,8 @@
 
 ---
 
-Imamgine->Dashboard
+<img width="3200" height="2000" alt="Dashboard" src="https://github.com/user-attachments/assets/8dfa4136-07b9-4cfb-b5a6-48fd8c28f7ab" />
+
 
 ---
 
@@ -74,22 +75,26 @@ Imamgine->Dashboard
 ## Screenshot
 
 
-<!-- SCREENSHOT: Pagina candidature con filtri e tag -->
+<img width="3200" height="2000" alt="Candidature" src="https://github.com/user-attachments/assets/907e9ece-59ac-4bc8-ae11-79afbc5e61eb" />
+
 *Lista candidature con filtri avanzati*
 
 ---
 
-<!-- SCREENSHOT: Dettaglio candidatura con pannello AI -->
+<img width="2560" height="1600" alt="Dettagli Candidatura + IA" src="https://github.com/user-attachments/assets/dfd45524-2cdc-4dcf-a5e9-622b8b1c8067" />
+
 *Dettaglio candidatura con analisi AI*
 
 ---
 
-<!-- SCREENSHOT: Pagina statistiche -->
+<img width="2560" height="1600" alt="Statistiche" src="https://github.com/user-attachments/assets/6dc1e65c-31b1-4417-a1d0-0b3508e7aee4" />
+
 *Statistiche avanzate*
 
 ---
 
-<!-- SCREENSHOT: Pagina impostazioni con temi -->
+<img width="2560" height="1600" alt="Impostazioni" src="https://github.com/user-attachments/assets/1478b30b-7f95-40fd-b66e-3e97c4f9f733" />
+
 *Impostazioni e selezione tema*
 
 ---
