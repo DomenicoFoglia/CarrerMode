@@ -1,58 +1,228 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🦅 CarrerMode
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**CarrerMode** è una web application full stack per gestire le candidature di lavoro in modo strutturato e intelligente. Nata da un'esigenza reale, permette di tracciare ogni candidatura, valutare le offerte con l'intelligenza artificiale, impostare promemoria via email e monitorare i propri progressi con statistiche dettagliate.
 
-## About Laravel
+> Progetto realizzato come portfolio personale da **Domenico Foglia** 2026.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Imamgine->Dashboard
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Indice
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- [Stack tecnologico](#stack-tecnologico)
+- [Funzionalità](#funzionalità)
+- [Screenshot](#screenshot)
+- [Installazione](#installazione)
+- [Avvio in locale](#avvio-in-locale)
+- [Struttura del repository](#struttura-del-repository)
+- [Autore](#autore)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Stack tecnologico
 
-## Agentic Development
+**Backend**
+- PHP 8.4 con Laravel 13
+- MySQL 8.0
+- Laravel Sanctum (autenticazione token)
+- Google Gemini 2.5 Flash (integrazione AI)
+- Laravel Scheduler e Notifications (email reminder)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+**Frontend**
+- React 19 con Vite
+- Zustand (state management)
+- Axios con interceptor
+- React Router DOM
+- Recharts 2.15
+- react-i18next (internazionalizzazione IT/EN)
+- react-hot-toast
+- lucide-react
+
+---
+
+## Funzionalità
+
+- Registrazione e autenticazione con token Sanctum
+- CRUD completo delle candidature con campi dettagliati: azienda, ruolo, stato, RAL, tipo di contratto, fonte, note personali e testo dell'offerta
+- Filtri server-side per stato, ricerca testuale e tag (modalità AND/OR) con paginazione configurabile
+- Tag colorati personalizzabili per ogni utente
+- Allegati per ogni candidatura: caricamento, visualizzazione e download di CV e cover letter (PDF, DOCX, ODT)
+- Esportazione di tutte le candidature in formato CSV compatibile con Excel
+- Reminder con notifica email automatica tramite Laravel Scheduler
+- Statistiche avanzate: andamento mensile, distribuzione stati, tag più usati, tipi di contratto
+- Analisi AI dell'offerta di lavoro rispetto al CV con match score, punti di forza e lacune
+- Generazione cover letter personalizzata con AI
+- Chiave API Gemini configurabile per ogni utente (cifrata nel database)
+- 10 temi visivi (6 scuri, 4 chiari) con persistenza nel database
+- Interfaccia completamente tradotta in italiano e inglese
+- Onboarding guidato al primo accesso, ripetibile dalle impostazioni
+- Dashboard asimmetrica con layout 70/30 e colonna destra sticky
+- Design responsive con breakpoint a 1100px
+
+---
+
+## Screenshot
+
+
+<!-- SCREENSHOT: Pagina candidature con filtri e tag -->
+*Lista candidature con filtri avanzati*
+
+---
+
+<!-- SCREENSHOT: Dettaglio candidatura con pannello AI -->
+*Dettaglio candidatura con analisi AI*
+
+---
+
+<!-- SCREENSHOT: Pagina statistiche -->
+*Statistiche avanzate*
+
+---
+
+<!-- SCREENSHOT: Pagina impostazioni con temi -->
+*Impostazioni e selezione tema*
+
+---
+
+## Installazione
+
+### Prerequisiti
+
+- PHP 8.4 
+- Composer
+- Node.js 18+
+- MySQL 8.0
+
+### Backend
 
 ```bash
-composer require laravel/boost --dev
+# Clona il repository
+git clone https://github.com/DomenicoFoglia/CarrerMode.git
+cd CarrerMode
 
-php artisan boost:install
+# Installa le dipendenze PHP
+composer install
+
+# Copia il file di configurazione
+cp .env.example .env
+
+# Genera la chiave applicazione
+php artisan key:generate
+
+# Configura il file .env con i dati del database
+# DB_DATABASE=carrermode
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+# Crea il database
+mysql -u root -p -e "CREATE DATABASE carrermode CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# Esegui le migration
+php artisan migrate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Frontend
 
-## Contributing
+```bash
+cd frontend
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Installa le dipendenze
+npm install
+```
 
-## Code of Conduct
+### Configurazione email (opzionale, per i reminder)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Nel file `.env` configura il mailer. In sviluppo si consiglia [Mailtrap](https://mailtrap.io):
 
-## Security Vulnerabilities
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=il_tuo_username
+MAIL_PASSWORD=la_tua_password
+MAIL_FROM_ADDRESS=noreply@carrermode.it
+MAIL_FROM_NAME="CarrerMode"
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Chiave API Gemini (opzionale, per le funzionalità AI)
 
-## License
+Non è necessaria una chiave nel file `.env`. Ogni utente inserisce la propria chiave direttamente dalla pagina Impostazioni dell'applicazione. La chiave gratuita di [Google AI Studio](https://aistudio.google.com/apikey) è sufficiente (250 richieste al giorno).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Avvio in locale
+
+Apri tre terminali separati:
+
+**Terminale 1 — Backend**
+```bash
+php artisan serve
+```
+
+**Terminale 2 — Frontend**
+```bash
+cd frontend
+npm run dev
+```
+
+**Terminale 3 — Scheduler email (opzionale)**
+```bash
+php artisan schedule:work
+```
+
+L'applicazione sarà disponibile su `http://localhost:5173`.
+
+---
+
+## Struttura del repository
+
+```
+CarrerMode/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── AuthController.php
+│   │   ├── ApplicationController.php
+│   │   ├── AttachmentController.php
+│   │   ├── ReminderController.php
+│   │   ├── TagController.php
+│   │   ├── UserController.php
+│   │   └── AiController.php
+│   ├── Models/
+│   └── Notifications/
+│       └── ReminderNotification.php
+├── database/migrations/
+├── routes/
+│   ├── api.php
+│   └── console.php
+├── storage/app/attachments/
+└── frontend/
+    └── src/
+        ├── api/
+        ├── components/
+        │   ├── layout/
+        │   ├── ConfirmModal.jsx
+        │   ├── LanguageSwitcher.jsx
+        │   └── OnboardingModal.jsx
+        ├── pages/
+        ├── store/
+        ├── themes/
+        └── locales/
+            ├── it.json
+            └── en.json
+```
+
+---
+
+## Autore
+
+**Domenico Foglia**
+
+- GitHub: [github.com/DomenicoFoglia](https://github.com/DomenicoFoglia)
+- LinkedIn: [linkedin.com/in/domenicofoglia](https://linkedin.com/in/domenicofoglia)
+
+---
+
+*Costruito con Laravel e React 2026*
