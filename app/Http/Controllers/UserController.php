@@ -103,4 +103,38 @@ class UserController extends Controller
         $user->update(['onboarding_completed' => false]);
         return response()->json(['message' => 'Onboarding resettato']);
     }
+
+    public function updateAiProvider(Request $request)
+    {
+        $user = \App\Models\User::find(Auth::id());
+        $validated = $request->validate([
+            'ai_provider' => 'required|in:gemini,groq',
+        ]);
+        $user->update(['ai_provider' => $validated['ai_provider']]);
+        return response()->json(['ai_provider' => $user->ai_provider]);
+    }
+
+    public function updateGroqKey(Request $request)
+    {
+        $user = \App\Models\User::find(Auth::id());
+        $validated = $request->validate([
+            'groq_api_key' => 'nullable|string|max:100',
+        ]);
+        $user->update([
+            'groq_api_key' => $validated['groq_api_key']
+                ? encrypt($validated['groq_api_key'])
+                : null
+        ]);
+        return response()->json([
+            'has_groq_key' => !is_null($user->groq_api_key)
+        ]);
+    }
+
+    public function getGroqKeyStatus()
+    {
+        $user = \App\Models\User::find(Auth::id());
+        return response()->json([
+            'has_groq_key' => !is_null($user->groq_api_key)
+        ]);
+    }
 }

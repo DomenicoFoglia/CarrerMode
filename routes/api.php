@@ -63,3 +63,8 @@ Route::put('/user/name', [UserController::class, 'updateName'])->middleware('aut
 //Tutorial
 Route::post('/user/onboarding-complete', [UserController::class, 'completeOnboarding'])->middleware('auth:sanctum');
 Route::post('/user/onboarding-reset', [UserController::class, 'resetOnboarding'])->middleware('auth:sanctum');
+
+// Provider AI e chiave Groq
+Route::put('/user/ai-provider', [UserController::class, 'updateAiProvider'])->middleware('auth:sanctum');
+Route::put('/user/groq-key', [UserController::class, 'updateGroqKey'])->middleware('auth:sanctum');
+Route::get('/user/groq-key-status', [UserController::class, 'getGroqKeyStatus'])->middleware('auth:sanctum');

@@ -112,6 +112,12 @@ function Sidebar({ isOpen, onClose }) {
             <NavLink to="/settings" className="sidebar-link">
                 <Settings size={15} /> {t('sidebar.settings')}
             </NavLink>
+            <div className="sidebar-kofi">
+                <a href="https://ko-fi.com/domenicofoglia" target="_blank" rel="noreferrer">
+                    <img src="https://ko-fi.com/img/cup-border.png" alt="Ko-fi" width="20" />
+                    Offrimi un ginseng!
+                </a>
+            </div>
         </div>
     )
 }

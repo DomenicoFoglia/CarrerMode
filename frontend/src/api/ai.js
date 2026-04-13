@@ -1,7 +1,13 @@
 import api from './axios'
 
-export const analyzeOffer = (offerText) =>
-    api.post('/ai/analyze-offer', { offer_text: offerText })
+export const analyzeOffer = (offerText, provider = null) =>
+    api.post('/ai/analyze-offer', {
+        offer_text: offerText,
+        ...(provider && { provider_override: provider })
+    })
 
-export const generateCoverLetter = (data) =>
-    api.post('/ai/generate-cover-letter', data)
+export const generateCoverLetter = (data, provider = null) =>
+    api.post('/ai/generate-cover-letter', {
+        ...data,
+        ...(provider && { provider_override: provider })
+    })

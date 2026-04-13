@@ -9,35 +9,48 @@ use Illuminate\Support\Facades\Storage;
 
 class AiController extends Controller
 {
-    private string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+    private string $geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+    private string $groqUrl   = 'https://api.groq.com/openai/v1/chat/completions';
+    private string $groqModel = 'llama-3.3-70b-versatile';
 
-    public function __construct()
+    private function getUser()
     {
-        //
+        return \App\Models\User::find(Auth::id());
     }
 
-    private function getApiKey(): ?string
+    private function getProvider(): string
     {
-        $user = \App\Models\User::find(Auth::id());
+        return $this->getUser()->ai_provider ?? 'gemini';
+    }
 
-        if(!$user || !$user->gemini_api_key){
+    private function getApiKey(?string $providerOverride = null): ?string
+    {
+        $user = $this->getUser();
+        $provider = $providerOverride ?: ($user->ai_provider ?? 'gemini');
+
+        $field = $provider === 'groq' ? 'groq_api_key' : 'gemini_api_key';
+
+        if (!$user || !$user->$field) {
             return null;
         }
 
-        try{
-            return decrypt($user->gemini_api_key);
-        }catch(\Exception $e){
-            \Log::error('Decrypt gemini key failed: ' . $e->getMessage());
+        try {
+            return decrypt($user->$field);
+        } catch (\Exception $e) {
+            \Log::error("Decrypt {$provider} key failed: " . $e->getMessage());
             return null;
         }
     }
 
     public function analyzeOffer(Request $request)
     {
-        $apiKey = $this->getApiKey();
+        $providerOverride = $request->input('provider_override');
+        $provider = $providerOverride ?: $this->getProvider();
+        $apiKey = $this->getApiKey($providerOverride);
+
         if (!$apiKey) {
             return response()->json([
-                'message' => 'Chiave API Gemini non configurata. Aggiungila nelle impostazioni.'
+                'message' => "Chiave API {$provider} non configurata. Aggiungila nelle impostazioni."
             ], 422);
         }
 
@@ -70,10 +83,14 @@ Rispondi SOLO con un oggetto JSON valido con questa struttura esatta, senza mark
 }
 PROMPT;
 
-        $response = $this->callGemini($prompt, $cvData, $apiKey);
+        try {
+            $response = $this->callAi($prompt, $cvData, $apiKey, $provider);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 503);
+        }
 
         if (!$response) {
-            return response()->json(['message' => 'Errore nella chiamata a Gemini.'], 500);
+            return response()->json(['message' => 'Errore nella chiamata al provider AI.'], 500);
         }
 
         return response()->json($this->extractJson($response));
@@ -81,12 +98,15 @@ PROMPT;
 
     public function generateCoverLetter(Request $request)
     {
-        $apiKey = $this->getApiKey();
+        $providerOverride = $request->input('provider_override');
+        $provider = $providerOverride ?: $this->getProvider();
+        $apiKey = $this->getApiKey($providerOverride);
+
         if (!$apiKey) {
             return response()->json([
-                'message' => 'Chiave API Gemini non configurata. Aggiungila nelle impostazioni.'
+                'message' => "Chiave API {$provider} non configurata. Aggiungila nelle impostazioni."
             ], 422);
-        }
+    }
 
         $validated = $request->validate([
             'offer_text' => 'required|string|min:50',
@@ -118,20 +138,126 @@ Non usare frasi banali come "sono lieto di candidarmi". Sii diretto e concreto.
 Rispondi SOLO con il testo della lettera, senza intestazioni, senza oggetto e senza firma.
 PROMPT;
 
-        $response = $this->callGemini($prompt, $cvData, $apiKey);
+        try {
+            $response = $this->callAi($prompt, $cvData, $apiKey, $provider);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 503);
+        }
 
         if (!$response) {
-            return response()->json(['message' => 'Errore nella chiamata a Gemini.'], 500);
+            return response()->json(['message' => 'Errore nella chiamata al provider AI.'], 500);
         }
 
         return response()->json(['cover_letter' => $response]);
+    }
+
+    private function callAi(string $prompt, ?array $cvData, string $apiKey, string $provider): ?string
+    {
+        if ($provider === 'groq') {
+            return $this->callGroq($prompt, $cvData, $apiKey);
+        }
+
+        return $this->callGemini($prompt, $cvData, $apiKey);
+    }
+
+    private function callGemini(string $prompt, ?array $cvData, string $apiKey): ?string
+    {
+        $parts = [];
+
+        if ($cvData && $cvData['type'] === 'pdf') {
+            $parts[] = [
+                'inline_data' => [
+                    'mime_type' => $cvData['mime'],
+                    'data'      => $cvData['data']
+                ]
+            ];
+        }
+
+        if ($cvData && $cvData['type'] === 'text') {
+            $parts[] = ['text' => "CV DEL CANDIDATO:\n" . $cvData['data'] . "\n\n"];
+        }
+
+        $parts[] = ['text' => $prompt];
+
+        $response = Http::post("{$this->geminiUrl}?key={$apiKey}", [
+            'contents' => [['parts' => $parts]]
+        ]);
+
+        if (!$response->successful()) {
+            $code    = $response->json('error.code') ?? 500;
+            $message = $response->json('error.message') ?? 'Errore sconosciuto';
+
+            if ($code === 503) {
+                \Log::warning('Gemini sovraccarico (503)');
+                throw new \Exception('Gemini è temporaneamente sovraccarico. Riprova tra qualche minuto.');
+            }
+
+            \Log::error('Gemini error: ' . $response->body());
+            throw new \Exception('Errore Gemini: ' . $message);
+        }
+
+        return $response->json('candidates.0.content.parts.0.text');
+    }
+
+    private function callGroq(string $prompt, ?array $cvData, string $apiKey): ?string
+    {
+        $messages = [];
+
+        if ($cvData) {
+            if ($cvData['type'] === 'text') {
+                $cvText = $cvData['data'];
+            } elseif ($cvData['type'] === 'pdf') {
+                // Estrae il testo dal PDF con smalot/pdfparser
+                try {
+                    $parser  = new \Smalot\PdfParser\Parser();
+                    $user    = \App\Models\User::find(Auth::id());
+                    $attachment = \App\Models\Attachment::whereHas('application', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    })->where('type', 'cv')->latest()->first();
+
+                    $fullPath = \Illuminate\Support\Facades\Storage::disk('local')->path($attachment->path);
+                    $pdf     = $parser->parseFile($fullPath);
+                    $cvText  = $pdf->getText();
+                } catch (\Exception $e) {
+                    \Log::warning('Groq PDF parse failed: ' . $e->getMessage());
+                    $cvText = 'CV allegato in formato PDF (estrazione testo non riuscita).';
+                    \Log::info('CV text passed to Groq: ' . substr($cvText, 0, 500));
+                }
+            } else {
+                $cvText = '';
+            }
+
+            $messages[] = [
+                'role'    => 'user',
+                'content' => "CV DEL CANDIDATO:\n" . $cvText
+            ];
+        }
+
+        $messages[] = [
+            'role'    => 'user',
+            'content' => $prompt
+        ];
+
+        $response = Http::withToken($apiKey)->post($this->groqUrl, [
+            'model'       => $this->groqModel,
+            'messages'    => $messages,
+            'temperature' => 0.3,
+        ]);
+
+        if (!$response->successful()) {
+            $message = $response->json('error.message') ?? 'Errore sconosciuto';
+            \Log::error('Groq error: ' . $response->body());
+            throw new \Exception('Errore Groq: ' . $message);
+        }
+
+        return $response->json('choices.0.message.content');
     }
 
     private function getCvData($user): ?array
     {
         // Prima cerca un CV allegato alla candidatura corrente
         // Poi cerca l'ultimo CV caricato dall'utente
-        $attachment = \App\Models\Attachment::whereHas('application', function($q) use ($user) {
+        $attachment = \App\Models\Attachment::whereHas('application', function ($q) use ($user) {
             $q->where('user_id', $user->id);
         })
         ->where('type', 'cv')
@@ -142,7 +268,7 @@ PROMPT;
             return null;
         }
 
-        $fullPath = Storage::disk('local')->path($attachment->path);
+        $fullPath  = Storage::disk('local')->path($attachment->path);
         $extension = strtolower(pathinfo($attachment->filename, PATHINFO_EXTENSION));
 
         if ($extension === 'pdf') {
@@ -154,17 +280,11 @@ PROMPT;
         }
 
         if ($extension === 'docx') {
-            return [
-                'type' => 'text',
-                'data' => $this->extractDocxText($fullPath)
-            ];
+            return ['type' => 'text', 'data' => $this->extractDocxText($fullPath)];
         }
 
         if ($extension === 'odt') {
-            return [
-                'type' => 'text',
-                'data' => $this->extractOdtText($fullPath)
-            ];
+            return ['type' => 'text', 'data' => $this->extractOdtText($fullPath)];
         }
 
         return null;
@@ -192,7 +312,7 @@ PROMPT;
 
     private function extractOdtText(string $path): string
     {
-        // ODT è uno ZIP — estraiamo content.xml
+        // ODT è uno ZIP, estraiamo content.xml
         $zip = new \ZipArchive();
         if ($zip->open($path) === true) {
             $content = $zip->getFromName('content.xml');
@@ -203,48 +323,13 @@ PROMPT;
         return '';
     }
 
-    private function callGemini(string $prompt, ?array $cvData = null, string $apiKey = ''): ?string
-    {
-        $parts = [];
-
-        // Se il CV è un PDF lo passiamo come file inline
-        if ($cvData && $cvData['type'] === 'pdf') {
-            $parts[] = [
-                'inline_data' => [
-                    'mime_type' => $cvData['mime'],
-                    'data'      => $cvData['data']
-                ]
-            ];
-        }
-
-        // Se il CV è testo (DOCX/ODT) lo aggiungiamo come testo
-        if ($cvData && $cvData['type'] === 'text') {
-            $parts[] = ['text' => "CV DEL CANDIDATO:\n" . $cvData['data'] . "\n\n"];
-        }
-
-        $parts[] = ['text' => $prompt];
-
-        $response = Http::post("{$this->apiUrl}?key={$apiKey}", [
-            'contents' => [
-                ['parts' => $parts]
-            ]
-        ]);
-
-        if (!$response->successful()) {
-            \Log::error('Gemini error: ' . $response->body());
-            return null;
-        }
-
-        return $response->json('candidates.0.content.parts.0.text');
-    }
-
     private function extractJson(string $text): array
     {
-        $text = preg_replace('/```json|```/', '', $text);
-        $text = trim($text);
+        $text    = preg_replace('/```json|```/', '', $text);
+        $text    = trim($text);
         $decoded = json_decode($text, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return ['error' => 'Risposta non valida da Gemini'];
+            return ['error' => 'Risposta non valida dal provider AI'];
         }
         return $decoded;
     }

@@ -243,7 +243,19 @@
         "name_title": "Nome Utente",
         "name_placeholder": "Il tuo nome...",
         "name_save": "Aggiorna nome",
-        "name_success": "Nome aggiornato con successo!"
+        "name_success": "Nome aggiornato con successo!",
+        "ai_provider_title": "Provider AI",
+        "ai_provider_description": "Scegli quale servizio AI usare per l'analisi delle offerte e la generazione della cover letter.",
+        "ai_provider_gemini_desc": "gemini-2.5-flash",
+        "ai_provider_groq_desc": "llama-3.3-70b",
+        "groq_placeholder": "Incolla qui la tua chiave Groq...",
+        "groq_save": "Salva chiave Groq",
+        "groq_remove": "Rimuovi",
+        "groq_saved": "Chiave Groq configurata ✓",
+        "groq_not_set": "Nessuna chiave Groq configurata",
+        "groq_success": "Chiave Groq salvata con successo!",
+        "groq_removed": "Chiave Groq rimossa.",
+        "groq_description": "Ottieni la tua chiave gratuita su"
     },
     "common": {
         "loading": "Caricamento...",

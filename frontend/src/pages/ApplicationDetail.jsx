@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../components/ConfirmModal';
 import { downloadAttachment, deleteAttachment } from '../api/attachments';
+import useAuthStore from '../store/authStore';
+
 
 function ApplicationDetail() {
     const { id } = useParams(); 
@@ -28,6 +30,8 @@ function ApplicationDetail() {
     const [coverLetter, setCoverLetter] = useState(null);
     const [aiPanel, setAiPanel] = useState(null);
     const aiPanelRef = useRef(null);
+    const { user } = useAuthStore();
+    const [tempProvider, setTempProvider] = useState(null);
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -97,8 +101,9 @@ function ApplicationDetail() {
         }
     }
 
-    const handleAnalyze = async () => {
+    const handleAnalyze = async (providerOverride = null) => {
         if (!application.offer_text) {
+            console.log('no offer text')
             toast(t('application_detail.no_offer_text'), { icon: 'ℹ️' });
             return
         }
@@ -110,8 +115,10 @@ function ApplicationDetail() {
         }, 100);
 
         try {
-            const res = await analyzeOffer(application.offer_text);
-            setAnalysis(res.data);
+            console.log('chiamo analyzeOffer...')
+            const res = await analyzeOffer(application.offer_text, providerOverride)
+            setAnalysis(res.data)
+            setTempProvider(providerOverride)
         } catch (error) {
             toast.error(error.response?.data?.message || t('common.error'));
             setAiPanel(null);
@@ -120,7 +127,7 @@ function ApplicationDetail() {
         }
     }
 
-    const handleCoverLetter = async () => {
+    const handleCoverLetter = async (providerOverride = null) => {
         if (!application.offer_text) {
             toast(t('application_detail.no_offer_text'), { icon: 'ℹ️' });
             return
@@ -137,8 +144,9 @@ function ApplicationDetail() {
                 offer_text: application.offer_text,
                 company: application.company,
                 role: application.role
-            })
+            }, providerOverride)
             setCoverLetter(res.data.cover_letter)
+            setTempProvider(providerOverride)
         } catch (error) {
             toast.error(error.response?.data?.message || t('common.error'));
             setAiPanel(null);
@@ -174,10 +182,10 @@ function ApplicationDetail() {
                     <button className="btn-delete" onClick={handleDelete}>
                         {t('application_detail.delete')}
                     </button>
-                    <button className="btn-ai" onClick={handleAnalyze} disabled={aiLoading}>
+                    <button className="btn-ai" onClick={() => handleAnalyze()} disabled={aiLoading}>
                         {aiLoading && aiPanel === 'analysis' ? t('application_detail.analyzing') : t('application_detail.analyze_ai')}
                     </button>
-                    <button className="btn-ai" onClick={handleCoverLetter} disabled={aiLoading}>
+                    <button className="btn-ai" onClick={() => handleCoverLetter()} disabled={aiLoading}>
                         {aiLoading && aiPanel === 'cover' ? t('application_detail.generating') : t('application_detail.cover_letter_btn')}
                     </button>
                 </div>
@@ -350,6 +358,22 @@ function ApplicationDetail() {
                                 </div>
                             </div>
                             <p className="ai-verdict">{analysis.verdict}</p>
+
+                            {/* Bottone per rianalizzare con l'altro provider */}
+                            <div className="ai-rerun">
+                                <span className="ai-rerun-label">
+                                    Analisi eseguita con {tempProvider || user?.ai_provider || 'gemini'} —
+                                </span>
+                                <button
+                                    className="btn-rerun"
+                                    disabled={aiLoading}
+                                    onClick={() => handleAnalyze(
+                                        (tempProvider || user?.ai_provider) === 'gemini' ? 'groq' : 'gemini'
+                                    )}
+                                >
+                                    Rianalizza con {(tempProvider || user?.ai_provider) === 'gemini' ? 'Groq' : 'Gemini'}
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -374,6 +398,20 @@ function ApplicationDetail() {
                     ) : coverLetter && (
                         <div className="cover-letter-text">{coverLetter}</div>
                     )}
+                    <div className="ai-rerun">
+                        <span className="ai-rerun-label">
+                            Generata con {tempProvider || user?.ai_provider || 'gemini'} —
+                        </span>
+                        <button
+                            className="btn-rerun"
+                            disabled={aiLoading}
+                            onClick={() => handleCoverLetter(
+                                (tempProvider || user?.ai_provider) === 'gemini' ? 'groq' : 'gemini'
+                            )}
+                        >
+                            Rigenera con {(tempProvider || user?.ai_provider) === 'gemini' ? 'Groq' : 'Gemini'}
+                        </button>
+                    </div>
                 </div>
             )}
 

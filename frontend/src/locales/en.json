@@ -241,8 +241,19 @@
         "name_title": "Username",
         "name_placeholder": "Your name...",
         "name_save": "Update name",
-        "name_success": "Name updated successfully!"
-
+        "name_success": "Name updated successfully!",
+        "ai_provider_title": "AI Provider",
+        "ai_provider_description": "Choose which AI service to use for offer analysis and cover letter generation.",
+        "ai_provider_gemini_desc": "gemini-2.5-flash",
+        "ai_provider_groq_desc": "llama-3.3-70b",
+        "groq_placeholder": "Paste your Groq key here...",
+        "groq_save": "Save Groq key",
+        "groq_remove": "Remove",
+        "groq_saved": "Groq key configured ✓",
+        "groq_not_set": "No Groq key configured",
+        "groq_success": "Groq key saved successfully!",
+        "groq_removed": "Groq key removed.",
+        "groq_description": "Get your free key at"
     },
     "common": {
         "loading": "Loading...",
